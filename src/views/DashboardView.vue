@@ -532,13 +532,3 @@ onMounted(() => {
         </div>
       </section>
 </template>
-
-
-
-I'm a senior software architect with almost 20 years of experience and I have been leading teams for the last 8 years, in industries such as fintech and e-commerce, in companies such as Payrix.com and Fabric.inc.
-
-At Fabric.inc, I worked as Lead Software Architect, leading the "Integration Squad", which is responsible for more than 200 hundred microservices that provide integration with third-party service providers such as Stripe, Authorize.net, CyberSource, SalesForce, etc. I created the "Lambda Controller Framework" as a core library underlying each microservice that we created. It speed up the development process by at least 50% by allowing the developers to work focused only in the Domain logic,
-
-I have a huge experience building serverless applications using Node.js, Typescript, Nest.JS, AWS Lambda, SQS, SNS, S3, EC2, ECS, MongoDB, Vue, React following paradigms such as TDD, DDD, Clean Architecture, Hexagonal Architecture, etc.
-
-To showcase my skills for this job I can list out this side project: https://github.com/web2solutions/arithmetic-calculator-api
