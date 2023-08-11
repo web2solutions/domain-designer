@@ -20,7 +20,7 @@
             </li>
             <li>
               <a class="has-icon has-dropdown-icon">
-                <span class="icon"><i class="mdi mdi-view-list"></i></span>
+                <span class="icon"><i class="mdi mdi-pencil-ruler"></i></span>
                 <span class="menu-item-label">Domain Designer</span>
                 <div class="dropdown-icon">
                   <span class="icon"><i class="mdi mdi-plus"></i></span>
@@ -28,13 +28,13 @@
               </a>
               <ul>
                 <li>
-                  <router-link to="/domain-new" class="has-icon">
-                    <span class="icon"><i class="mdi mdi-table"></i></span>
+                  <router-link to="/domains/new" class="has-icon">
+                    <span class="icon"><i class="mdi mdi-ballot"></i></span>
                     <span class="menu-item-label">New Domain</span>
                   </router-link>
                 </li>
                 <li>
-                  <router-link to="/domains" class="has-icon">
+                  <router-link to="/domains/list" class="has-icon">
                     <span class="icon"><i class="mdi mdi-table"></i></span>
                     <span class="menu-item-label">List Domains</span>
                   </router-link>

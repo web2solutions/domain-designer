@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import router from './router';
+import router from '@/router';
 import { RouterView } from 'vue-router'
-import NavBarMain from './components/NavBarMain.vue'
-import AsideMenuMain from './components/AsideMenuMain.vue'
-import BreadCrumbMain from './components/BreadCrumbMain.vue'
-import FooterMain from './components/FooterMain.vue'
+import { NavBarMain, AsideMenuMain, FooterMain } from '@/components/Application/index'
+
 
 const route = ref(router.currentRoute)
 
@@ -59,13 +57,7 @@ onMounted(() => {
       document.documentElement.classList.remove('is-clipped');
     });
   });
-  /* Notification dismiss */
 
-  Array.from(document.getElementsByClassName('jb-notification-dismiss')).forEach(function (el) {
-    el.addEventListener('click', function (e) {
-      e.currentTarget.closest('.notification').classList.add('is-hidden');
-    });
-  });
 });
 
 </script>
@@ -74,7 +66,7 @@ onMounted(() => {
 <template>
   <NavBarMain />
   <AsideMenuMain />
-  <BreadCrumbMain v-bind:moduleName="route.name" />
+  
   <RouterView />
   <FooterMain />
 </template>

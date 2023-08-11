@@ -9,39 +9,43 @@ export const routes = [
     component: DashboardView,
     props: { moduleName: 'Dashboard' },
   },
-  {
+  /* {
     path: '/domains',
     name: 'List Domains',
     // route level code-splitting
     // this generates a separate chunk (About.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import('../views/DomainsView.vue'),
+    component: () => import('../views/Domains/DomainsView.vue'),
     props: { moduleName: 'List Domains' },
-  },
+  }, */
   {
-    path: '/domain-new',
-    name: 'New Domain',
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/DomainNewView.vue'),
-    props: { moduleName: 'New Domain' },
+    path: '/domains',
+    props: { moduleName: 'Domain Designer' },
+    component: () => import('@/views/Domains/ModuleDrawer.vue'),
+    children: [
+        { 
+          path: 'list',
+          name: 'List Domains',
+          component: () => import('@/views/Domains/ModuleList.vue'),
+          props: { childName: 'List Domains', icon: 'mdi-table' },
+        },
+        { 
+          path: 'new',
+          name: 'New Domain',
+          component: () => import('@/views/Domains/ModuleAddEdit.vue'),
+          props: { childName: 'New Domain', icon: 'mdi-ballot' },
+        }, 
+    ]
   },
   {
     path: '/profile',
     name: 'My Profile',
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/MyProfileView.vue'),
+    component: () => import('@/views/MyProfileView.vue'),
     props: { moduleName: 'My Profile' },
   },
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import('../views/AboutView.vue')
   },
   { path: '/:pathMatch(.*)*', redirect: '/' }

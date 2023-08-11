@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
-import HeaderModules from '../components/HeaderModules.vue';
+import { HeaderModules } from '@/components/Application/index';
+import { formatCurrency } from '@/components/CRUD/utils';
+import { useLanguageStore, useSessionStore, session } from '@/stores';
+
+const languageStore: any = useLanguageStore();
 
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
@@ -133,7 +137,7 @@ onMounted(() => {
                 <div class="level is-mobile">
                   <div class="level-item">
                     <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      Clients
+                      {{ languageStore.default.dashboard.Clients }}
                     </h3>
                       <h1 class="title">
                         512
@@ -155,10 +159,11 @@ onMounted(() => {
                 <div class="level is-mobile">
                   <div class="level-item">
                     <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      Sales
+                      {{ languageStore.default.dashboard.Sales }}
                     </h3>
                       <h1 class="title">
-                        $7,770
+                        
+                        {{ formatCurrency(7770) }}
                       </h1>
                     </div>
                   </div>
@@ -177,7 +182,75 @@ onMounted(() => {
                 <div class="level is-mobile">
                   <div class="level-item">
                     <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      Performance
+                      {{ languageStore.default.dashboard.Performance }}
+                    </h3>
+                      <h1 class="title">
+                        256%
+                      </h1>
+                    </div>
+                  </div>
+                  <div class="level-item has-widget-icon">
+                    <div class="is-widget-icon"><span class="icon has-text-success is-large"><i
+                        class="mdi mdi-finance mdi-48px"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tile is-ancestor">
+          <div class="tile is-parent">
+            <div class="card tile is-child">
+              <div class="card-content">
+                <div class="level is-mobile">
+                  <div class="level-item">
+                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
+                      {{ languageStore.default.dashboard.Clients }}
+                    </h3>
+                      <h1 class="title">
+                        512
+                      </h1>
+                    </div>
+                  </div>
+                  <div class="level-item has-widget-icon">
+                    <div class="is-widget-icon"><span class="icon has-text-primary is-large"><i
+                        class="mdi mdi-account-multiple mdi-48px"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tile is-parent">
+            <div class="card tile is-child">
+              <div class="card-content">
+                <div class="level is-mobile">
+                  <div class="level-item">
+                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
+                      {{ languageStore.default.dashboard.Sales }}
+                    </h3>
+                      <h1 class="title">
+                        {{ formatCurrency(8609) }}
+                      </h1>
+                    </div>
+                  </div>
+                  <div class="level-item has-widget-icon">
+                    <div class="is-widget-icon"><span class="icon has-text-info is-large"><i
+                        class="mdi mdi-cart-outline mdi-48px"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tile is-parent">
+            <div class="card tile is-child">
+              <div class="card-content">
+                <div class="level is-mobile">
+                  <div class="level-item">
+                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
+                      {{ languageStore.default.dashboard.Performance }}
                     </h3>
                       <h1 class="title">
                         256%
@@ -198,7 +271,7 @@ onMounted(() => {
           <header class="card-header">
             <p class="card-header-title">
               <span class="icon"><i class="mdi mdi-finance"></i></span>
-              Performance
+              {{ languageStore.default.dashboard.Performance }}
             </p>
             <a href="#" class="card-header-icon">
               <span class="icon"><i class="mdi mdi-reload"></i></span>
@@ -220,11 +293,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
+        <!--
         <div class="card has-table has-mobile-sort-spaced">
           <header class="card-header">
             <p class="card-header-title">
               <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-              Clients
+              {{ languageStore.default.dashboard.Clients }}
             </p>
             <a href="#" class="card-header-icon">
               <span class="icon"><i class="mdi mdi-reload"></i></span>
@@ -530,5 +604,6 @@ onMounted(() => {
             </div>
           </div>
         </div>
+        -->
       </section>
 </template>

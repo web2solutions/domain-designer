@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { RouteRecordName } from 'vue-router';
-import HeaderModules from '../components/HeaderModules.vue';
+import { BreadCrumbMain } from '@/components/Application';
+
 
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
@@ -8,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-      <HeaderModules v-bind:moduleName="moduleName" />
+      <BreadCrumbMain moduleName="Account" v-bind:childName="moduleName" />
       <section class="section is-main-section">
         <div class="tile is-ancestor">
           <div class="tile is-parent">
