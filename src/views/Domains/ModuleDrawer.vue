@@ -8,7 +8,7 @@ const route = ref(router.currentRoute)
 
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
-  // childName: RouteRecordName | null | undefined,
+  icon: RouteRecordName | null | undefined,
 }>()
 </script>
 

@@ -5,6 +5,7 @@ import { BreadCrumbMain } from '@/components/Application';
 
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
+  icon: string,
 }>()
 </script>
 

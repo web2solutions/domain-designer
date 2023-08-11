@@ -1,46 +1,49 @@
 <script setup lang="ts">
-
+import router from '@/router';
+console.log('<><><><><><><><><><><>', router.options.routes)
 </script>
 
 <template>
     <aside class="aside is-placed-left is-expanded">
         <div class="aside-tools has-icon">          
           <div class="aside-tools-label">
-            <img src="/img/quix.svg" height="30" />
+            <router-link to="/">
+              <img src="/img/quix.svg" alt="QuiXSales" height="30" />
+            </router-link>
           </div>
         </div>
         <div class="menu is-menu-main">
           <p class="menu-label">General</p>
           <ul class="menu-list">
-            <li>
-              <router-link to="/" class="has-icon">
-                <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-                <span class="menu-item-label">Dashboard</span>
-              </router-link>
-            </li>
-            <li>
-              <a class="has-icon has-dropdown-icon">
-                <span class="icon"><i class="mdi mdi-pencil-ruler"></i></span>
-                <span class="menu-item-label">Domain Designer</span>
-                <div class="dropdown-icon">
-                  <span class="icon"><i class="mdi mdi-plus"></i></span>
-                </div>
-              </a>
-              <ul>
-                <li>
-                  <router-link to="/domains/new" class="has-icon">
-                    <span class="icon"><i class="mdi mdi-ballot"></i></span>
-                    <span class="menu-item-label">New Domain</span>
+            <template v-for="route in router.options.routes" :key="route.path">
+              <template v-if="route.name !== 'wildcard'">
+                <li v-if="route.children">
+                  <a class="has-icon has-dropdown-icon">
+                    <span class="icon"><i :class="'mdi ' + route.props.icon"></i></span>
+                    <span class="menu-item-label">{{ route.name }}</span>
+                    <div class="dropdown-icon">
+                      <span class="icon"><i class="mdi mdi-plus"></i></span>
+                    </div>
+                  </a>
+                  <ul>
+                    <template v-for="cCoute in route.children" :key="cCoute.name">
+                      <li>
+                        <router-link :to="route.path + '/' + cCoute.path" class="has-icon">
+                          <span class="icon"><i :class="'mdi ' + cCoute.props.icon"></i></span>
+                          <span class="menu-item-label">{{ cCoute.name }}</span>
+                        </router-link>
+                      </li>
+                    </template>
+                  </ul>
+                </li>
+                <li v-else>
+                  <router-link :to="route.path" class="has-icon">
+                    <span class="icon"><i :class="'mdi ' + route.props.icon"></i></span>
+                    <span class="menu-item-label">{{ route.name }}</span>
                   </router-link>
                 </li>
-                <li>
-                  <router-link to="/domains/list" class="has-icon">
-                    <span class="icon"><i class="mdi mdi-table"></i></span>
-                    <span class="menu-item-label">List Domains</span>
-                  </router-link>
-                </li>
-              </ul>
-            </li>
+              </template>
+            </template>
           </ul>
           <!-- <p class="menu-label">Examples</p>
           <ul class="menu-list">

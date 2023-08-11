@@ -17,9 +17,6 @@ defineProps<{
           <button type="button" class="button">
             <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
           </button>
-          <button type="button" class="button is-active">
-            <span class="icon"><i class="mdi mdi-circle-edit-outline"></i></span>
-          </button>
           <button type="button" class="button">
             <span class="icon"><i class="mdi mdi-close-circle"></i></span>
           </button>

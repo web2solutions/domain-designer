@@ -8,6 +8,8 @@ const enUS: Record<string, any> = {
         Settings: 'Settings',
         Messages: 'Messages',
         LogOut: 'Log Out',
+        Home: 'Home',
+        Dashboard: 'Dashboard',
     },
     dashboard: {
         Clients: 'Clients',
@@ -24,6 +26,8 @@ const ptBR: Record<string, any> = {
         Settings: 'Configurações',
         Messages: 'Mensagens',
         LogOut: 'Sair',
+        Home: 'Início',
+        Dashboard: 'Dashboard',
     },
     dashboard: {
         Clients: 'Clientes',

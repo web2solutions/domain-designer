@@ -7,7 +7,7 @@ export const routes = [
     path: '/',
     name: 'Dashboard',
     component: DashboardView,
-    props: { moduleName: 'Dashboard' },
+    props: { moduleName: 'Dashboard', icon: 'mdi-monitor-dashboard' },
   },
   /* {
     path: '/domains',
@@ -20,7 +20,8 @@ export const routes = [
   }, */
   {
     path: '/domains',
-    props: { moduleName: 'Domain Designer' },
+    props: { moduleName: 'Domain Designer', icon: 'mdi-pencil-ruler' },
+    name: 'Domain Designer',
     component: () => import('@/views/Domains/ModuleDrawer.vue'),
     children: [
         { 
@@ -41,14 +42,14 @@ export const routes = [
     path: '/profile',
     name: 'My Profile',
     component: () => import('@/views/MyProfileView.vue'),
-    props: { moduleName: 'My Profile' },
+    props: { moduleName: 'My Profile', icon: 'mdi-account-box-outline' },
   },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue')
-  },
-  { path: '/:pathMatch(.*)*', redirect: '/' }
+  { 
+    name: 'wildcard', 
+    path: '/:pathMatch(.*)*', 
+    redirect: '/',
+    props: { moduleName: 'wildcard', icon: 'mdi-account-box-outline' }
+  }
 ];
 
 const router = createRouter({

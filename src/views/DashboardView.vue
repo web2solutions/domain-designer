@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
-import { HeaderModules } from '@/components/Application/index';
+import { HeaderModules, BreadCrumbMain } from '@/components/Application/index';
 import { formatCurrency } from '@/components/CRUD/utils';
 import { useLanguageStore, useSessionStore, session } from '@/stores';
 
@@ -9,6 +9,7 @@ const languageStore: any = useLanguageStore();
 
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
+  icon: string,
 }>()
 
 onMounted(() => {
@@ -128,7 +129,7 @@ onMounted(() => {
 </script>
 
 <template>
-      <HeaderModules v-bind:moduleName="moduleName" />
+      <BreadCrumbMain v-bind:moduleName="moduleName" childName="" />
       <section class="section is-main-section">
         <div class="tile is-ancestor">
           <div class="tile is-parent">

@@ -34,30 +34,28 @@ function onClickLanguage (e: Event) {
           <div class="navbar-end">
             <div class="navbar-item has-dropdown has-dropdown-with-icons has-divider is-hoverable">
               <a class="navbar-link is-arrowless has-icon">
-                <span class="icon has-update-mark"><i class="mdi mdi-menu"></i></span>
+                <span class="icon has-update-mark"><i class="mdi mdi-bell"></i></span>
                 <span>{{ languageStore.default.application.Notifications }}</span>
                 <span class="icon">
                 <i class="mdi mdi-chevron-down"></i>
               </span>
               </a>
               <div class="navbar-dropdown">
-                <router-link to="/profile" class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-account"></i></span>
-                  <span>{{ languageStore.default.application.MyProfile }}</span>
-                </router-link>
-                <a class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-settings"></i></span>
-                  <span>{{ languageStore.default.application.Settings }}</span>
-                </a>
-                <a class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-email"></i></span>
-                  <span>{{ languageStore.default.application.Messages }}</span>
-                </a>
+                <p class="navbar-item block">
+                  Notification 1 text goes here. <br /> Yesterday was another days ...
+                </p>
                 <hr class="navbar-divider">
-                <a class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-logout"></i></span>
-                  <span>{{ languageStore.default.application.LogOut }}</span>
-                </a>
+                <p class="navbar-item block">
+                  Notification 3 text goes here. <br /> Yesterday was another days ...
+                </p>
+                <hr class="navbar-divider">
+                <p class="navbar-item block">
+                  Notification 3 text goes here. <br /> Yesterday was another days ...
+                </p>
+                <hr class="navbar-divider">
+                <p class="navbar-item block">
+                  Notification 4 text goes here. <br /> Yesterday was another days ...
+                </p>
               </div>
             </div>
             <div class="navbar-item has-dropdown has-dropdown-with-icons has-divider has-user-avatar is-hoverable">
