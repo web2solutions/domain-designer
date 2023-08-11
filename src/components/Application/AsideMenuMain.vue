@@ -4,9 +4,9 @@
 
 <template>
     <aside class="aside is-placed-left is-expanded">
-        <div class="aside-tools">
+        <div class="aside-tools has-icon">          
           <div class="aside-tools-label">
-            <span><b>QuiX</b> ERP</span>
+            <img src="/img/quix.svg" height="30" />
           </div>
         </div>
         <div class="menu is-menu-main">

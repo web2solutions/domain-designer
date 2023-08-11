@@ -24,7 +24,7 @@ export function formatCurrency (number: number) {
   const { language } = sessionStore.locale;
   return new Intl.NumberFormat(language, {
     style: 'currency',
-    currency: 'BRL',
+    currency: language === 'en-US' ? 'USD' : 'BRL',
     minimumFractionDigits: 2
   }).format(number)
 }
