@@ -14,9 +14,9 @@ defineProps<{
           {{ childName }}
         </p>
         <p class="card-header-icon">
-          <button type="button" class="button">
+          <router-link to="create" type="button" class="button">
             <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
-          </button>
+          </router-link>
           <button type="button" class="button">
             <span class="icon"><i class="mdi mdi-close-circle"></i></span>
           </button>

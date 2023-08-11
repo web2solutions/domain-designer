@@ -138,7 +138,7 @@ onMounted(() => {
                 <div class="level is-mobile">
                   <div class="level-item">
                     <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Clients }}
+                      {{ languageStore.default.dashboard.Customers }}
                     </h3>
                       <h1 class="title">
                         512
@@ -207,7 +207,7 @@ onMounted(() => {
                 <div class="level is-mobile">
                   <div class="level-item">
                     <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Clients }}
+                      {{ languageStore.default.dashboard.Customers }}
                     </h3>
                       <h1 class="title">
                         512
@@ -299,7 +299,7 @@ onMounted(() => {
           <header class="card-header">
             <p class="card-header-title">
               <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-              {{ languageStore.default.dashboard.Clients }}
+              {{ languageStore.default.dashboard.Customers }}
             </p>
             <a href="#" class="card-header-icon">
               <span class="icon"><i class="mdi mdi-reload"></i></span>

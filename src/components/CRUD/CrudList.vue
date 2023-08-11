@@ -64,9 +64,9 @@ onMounted(() => {
                       <button class="button is-small is-light" type="button">
                         <span class="icon"><i class="mdi mdi-eye"></i></span>
                       </button>
-                      <button class="button is-small is-light" type="button">
+                      <router-link :to="'update/' + record.id" class="button is-small is-light" type="button">
                         <span class="icon"><i class="mdi mdi-pencil"></i></span>
-                      </button>
+                      </router-link>
                       <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
                         <span class="icon"><i class="mdi mdi-trash-can"></i></span>
                       </button>

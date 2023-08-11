@@ -41,19 +41,19 @@ function onClickLanguage (e: Event) {
               </span>
               </a>
               <div class="navbar-dropdown">
-                <p class="navbar-item block">
-                  Notification 1 text goes here. <br /> Yesterday was another days ...
+                <p class="navbar-item is-flex">
+                  Notification 1 text goes here. Yesterday was another days ...
                 </p>
                 <hr class="navbar-divider">
-                <p class="navbar-item block">
+                <p class="navbar-item is-flex">
                   Notification 3 text goes here. <br /> Yesterday was another days ...
                 </p>
                 <hr class="navbar-divider">
-                <p class="navbar-item block">
+                <p class="navbar-item is-flex">
                   Notification 3 text goes here. <br /> Yesterday was another days ...
                 </p>
                 <hr class="navbar-divider">
-                <p class="navbar-item block">
+                <p class="navbar-item is-flex">
                   Notification 4 text goes here. <br /> Yesterday was another days ...
                 </p>
               </div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useLanguageStore } from '@/stores';
 import router from '@/router';
+
+const languageStore = useLanguageStore();
 console.log('<><><><><><><><><><><>', router.options.routes)
 </script>
 
@@ -13,11 +16,13 @@ console.log('<><><><><><><><><><><>', router.options.routes)
           </div>
         </div>
         <div class="menu is-menu-main">
-          <p class="menu-label">General</p>
+          <p class="menu-label">{{ languageStore.default.application.Applications }}</p>
+          
           <ul class="menu-list">
             <template v-for="route in router.options.routes" :key="route.path">
               <template v-if="route.name !== 'wildcard'">
                 <li v-if="route.children">
+                  <!-- <p class="menu-label">{{ route.name }}</p> -->
                   <a class="has-icon has-dropdown-icon">
                     <span class="icon"><i :class="'mdi ' + route.props.icon"></i></span>
                     <span class="menu-item-label">{{ route.name }}</span>
@@ -27,7 +32,7 @@ console.log('<><><><><><><><><><><>', router.options.routes)
                   </a>
                   <ul>
                     <template v-for="cCoute in route.children" :key="cCoute.name">
-                      <li>
+                      <li v-if="cCoute.path.indexOf(':id') < 0">
                         <router-link :to="route.path + '/' + cCoute.path" class="has-icon">
                           <span class="icon"><i :class="'mdi ' + cCoute.props.icon"></i></span>
                           <span class="menu-item-label">{{ cCoute.name }}</span>
@@ -45,6 +50,7 @@ console.log('<><><><><><><><><><><>', router.options.routes)
               </template>
             </template>
           </ul>
+          
           <!-- <p class="menu-label">Examples</p>
           <ul class="menu-list">
             <li>

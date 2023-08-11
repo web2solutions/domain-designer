@@ -10,9 +10,10 @@ const enUS: Record<string, any> = {
         LogOut: 'Log Out',
         Home: 'Home',
         Dashboard: 'Dashboard',
+        Applications: 'Applications',
     },
     dashboard: {
-        Clients: 'Clients',
+        Customers: 'Customers',
         Sales: 'Sales',
         Performance: 'Performance',
     }
@@ -28,9 +29,10 @@ const ptBR: Record<string, any> = {
         LogOut: 'Sair',
         Home: 'Início',
         Dashboard: 'Dashboard',
+        Applications: 'Aplicações',
     },
     dashboard: {
-        Clients: 'Clientes',
+        Customers: 'Clientes',
         Sales: 'Vendas',
         Performance: 'Performance',
     }

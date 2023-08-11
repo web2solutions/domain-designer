@@ -65,8 +65,7 @@ onMounted(() => {
 
 <template>
   <NavBarMain />
-  <AsideMenuMain />
-  
+  <AsideMenuMain />  
   <RouterView />
   <FooterMain />
 </template>

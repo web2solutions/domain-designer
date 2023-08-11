@@ -8,7 +8,7 @@
           <div class="level">
             <div class="level-left">
               <div class="level-item">
-                © {{ (new Date()).getUTCFullYear() }}, Xpertminds
+                © {{ (new Date()).getUTCFullYear() }}, QuiX Sales
               </div>
               <div class="level-item">
                 <!-- <a href="https://github.com/vikdiesel/admin-one-bulma-dashboard" style="height: 20px">
