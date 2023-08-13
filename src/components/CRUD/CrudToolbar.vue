@@ -2,7 +2,7 @@
 import type { RouteRecordName } from 'vue-router';
 
 defineProps<{
-  childName: RouteRecordName | null | undefined,
+  appName: RouteRecordName | null | undefined,
   icon: string,
 }>()
 </script>
@@ -11,7 +11,7 @@ defineProps<{
     <header class="card-header">
         <p class="card-header-title">
           <span class="icon"><i :class="'mdi ' + icon"></i></span>
-          {{ childName }}
+          {{ appName }}
         </p>
         <p class="card-header-icon">
           <router-link to="create" type="button" class="button">

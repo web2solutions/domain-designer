@@ -32,13 +32,3 @@ export class IDX {
     }
 }
 export const idx = new IDX();
-console.log('STARTED IDX IDX')
-export const getDb = async function() {
-
-    if(idx == null) {
-        ;
-        
-    }
-
-    return idx.db;
-}

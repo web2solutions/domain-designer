@@ -1,3 +1,4 @@
+export { default as CrudApp } from './CrudApp.vue';
 export { default as CrudList } from './CrudList.vue';
 export { default as CrudToolbar } from './CrudToolbar.vue';
 export { default as CrudListCell } from './CrudListCell.vue';

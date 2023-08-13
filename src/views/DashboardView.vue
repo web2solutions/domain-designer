@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
-import { HeaderModules, BreadCrumbMain } from '@/components/Application/index';
+import { BreadCrumbMain } from '@/components/Application/index';
 import { formatCurrency } from '@/components/CRUD/utils';
-import { useLanguageStore, useSessionStore, session } from '@/stores';
+import { useLanguageStore } from '@/stores';
+import { useDomainsStore } from '@/stores/domains.store';
 
 const languageStore: any = useLanguageStore();
 
@@ -12,7 +13,11 @@ defineProps<{
   icon: string,
 }>()
 
-onMounted(() => {
+onMounted(async() => {
+
+  const domainStore = useDomainsStore();
+  await domainStore.sync();
+
   const randomChartData = function randomChartData(n: number) {
       const data = [];
 

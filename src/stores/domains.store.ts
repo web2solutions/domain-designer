@@ -3,7 +3,6 @@ import Swal from 'sweetalert2';
 import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
 import { DomainModel } from '@/models/DomainModel'
 import type { IQuery } from './IQuery';
-import { domains } from './domains';
 import { useAlertStore } from '@/stores/alert.store';
 
 export const useDomainsStore = defineStore({
@@ -31,11 +30,11 @@ export const useDomainsStore = defineStore({
                 type: 'date',
             },
         ],
-        records: [...domains],
+        records: [],
         record: {},
         filter: false,
         page: 1,
-        pageSize: 20,
+        pageSize: 10,
         pageSizes: [5, 10, 15, 20, 50, 100],
         total: 0,
         numberOfPages: 0,
@@ -69,7 +68,7 @@ export const useDomainsStore = defineStore({
             const document = new DomainModel(record);
             await document.save();
             const rawDocument = document.toJSON();
-            console.log(rawDocument);
+            // console.log(rawDocument);
             this.records.push(rawDocument);
             return rawDocument;
         },
@@ -77,7 +76,7 @@ export const useDomainsStore = defineStore({
         async update (id: string, record: IDomainCreateDTO) {
             const document = await DomainModel.update(id, record);
             const rawDocument = document;
-            console.log(rawDocument);
+            // console.log(rawDocument);
             this.records = this.records.map(record =>{
                 if(record.id === id) {
                     return { ...record, ...rawDocument };
@@ -89,6 +88,7 @@ export const useDomainsStore = defineStore({
 
         async getRecord (id: string) {
             const document = await DomainModel.get(id);
+            this.record = { ...document };
             return document
         },
 
@@ -104,7 +104,7 @@ export const useDomainsStore = defineStore({
                 }
             });
             if (isConfirmed) {
-                console.log(id)
+                // console.log(id)
                 await DomainModel.remove(id);
                 await this.sync();
                 const alertStore = useAlertStore();
@@ -112,10 +112,29 @@ export const useDomainsStore = defineStore({
             }
         },
 
+        async changePage(page: number) {
+            this.page = page;
+        },
+
+        async changePageSize(size: number) {
+            this.pageSize = size;
+        },
+
         async sync() {
             try {
-                const records = await DomainModel.getAll();
-                this.records = [ ...records ];
+                const paging = {
+                    page: this.page,
+                    size: this.pageSize,
+                };
+                console.log(paging)
+                const { result, total } = await DomainModel.getAll(paging);
+                this.records = [ ...result ];
+                this.total = total;
+                this.numberOfPages = Math.ceil(this.total / this.pageSize);
+                this.pageTotalRecords = [];
+                for(let x = 1; x <= this.numberOfPages; x++) {
+                    this.pageTotalRecords.push(x);
+                }
             } catch (error) {
                 console.log(error)
             } 

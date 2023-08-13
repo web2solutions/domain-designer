@@ -2,29 +2,22 @@
 <script setup lang="ts">
 // import type { Store } from 'pinia';
 import { onMounted } from 'vue';
-import { useDomainsStore } from '@/stores/domains.store';
-
 import { CrudListTable } from './index'
 
-const domainStore = useDomainsStore()
-
-const props = defineProps<{
+defineProps<{
   store: any,
 }>()
 
-
-
 onMounted(() => {
-  console.log(props.store.columns[1])
+  // console.log(props.store.columns[1])
 })
-
 
 </script>
 
 <template>
     
       <div class="card-content">
-        <template v-if="domainStore.records.length === 0">
+        <template v-if="store.records.length === 0">
           <div class="notification is-light">
             <div class="level">
               <div class="level-left">

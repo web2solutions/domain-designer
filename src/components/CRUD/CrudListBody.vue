@@ -30,9 +30,9 @@ const props = defineProps<{
           
           <td class="is-actions-cell">
             <div class="buttons is-right">
-              <button class="button is-small is-light" type="button">
+              <router-link :to="'overview/' + record.id" class="button is-small is-light" type="button">
                 <span class="icon"><i class="mdi mdi-eye"></i></span>
-              </button>
+              </router-link>
               <router-link :to="'update/' + record.id" class="button is-small is-light" type="button">
                 <span class="icon"><i class="mdi mdi-pencil"></i></span>
               </router-link>

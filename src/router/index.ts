@@ -41,7 +41,14 @@ export const routes = [
           name: 'Update Domain',
           component: () => import('@/views/Domains/ModuleAddEdit.vue'),
           props: { childName: 'Update Domain', icon: 'mdi-ballot' },
-        }, 
+        },
+        { 
+          path: 'overview/:id',
+          name: 'Domain Overview',
+          component: () => import('@/views/Domains/DomainOverview.vue'),
+          props: { childName: 'Domain Overview', icon: 'mdi-ballot' },
+        },
+        // 
     ]
   },
   {

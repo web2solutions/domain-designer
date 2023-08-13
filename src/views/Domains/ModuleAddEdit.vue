@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick, watch } from 'vue';
+import { ref, onMounted,  watch } from 'vue';
 import type { RouteRecordName } from 'vue-router';
-import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+import { useRoute } from 'vue-router';
 import router from '@/router'
-import { AlertMessage } from '@/components/Application/';
-import { useDomainsStore } from '@/stores';
+import { useDomainsStore, useAlertStore } from '@/stores';
 import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
-import { useAlertStore } from '@/stores';
 
-// const routeRef = ref(router.currentRoute);
 const route = useRoute();
 
 const alertStore = useAlertStore();
@@ -21,11 +18,10 @@ let isUpdate = false;
 
 const id = route.params.id ? route.params.id.toString() : undefined;
 
-
 defineProps<{
   childName: RouteRecordName | null | undefined,
   icon: string,
-}>()
+}>();
 
 watch(
   () => route.params.id,
@@ -66,14 +62,14 @@ function validate (event) {
     if(field.name === 'input_name') {
       input_name_invalid.value = true;
     } else if(field.name === 'input_description') {
-      input_description_invalid.value = true;
+      // input_description_invalid.value = true;
     }
     return false;
   } else {
     if(field.name === 'input_name') {
       input_name_invalid.value = false;
     } else if(field.name === 'input_description') {
-      input_description_invalid.value = false;
+      // input_description_invalid.value = false;
     }
   }
 
@@ -136,7 +132,6 @@ function reset() {
 </script>
 
 <template>
-  <AlertMessage />
   <div class="card">
     <header class="card-header">
       <p class="card-header-title">

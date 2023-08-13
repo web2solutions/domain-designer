@@ -1,5 +1,7 @@
 
 import { BaseModel } from "@/models/BaseModel";
+import type { IQueryRequest } from "@/stores/IQueryRequest";
+import type { IPagingResponse } from "@/stores/IPagingResponse";
 import type { IDomainCreateDTO } from "@/models/IDomainCreateDTO";
 import { idx, DomainDesignerDB } from '@/database/IDX'
 import { DomainSchema } from "@/database/DomainSchema";
@@ -35,8 +37,25 @@ export class DomainModel extends BaseModel implements DomainSchema {
         console.log(this);
     }
 
-    static async getAll() {
-        return await idx.db.domains.toArray();
+    static async getAll(query: IQueryRequest): Promise<IPagingResponse<DomainSchema>> {
+        const page = query.page || 1;
+        const size = query.size || 30;
+        const total = await idx.db.domains.toCollection().count();
+        const offset = (page * size) - size;
+        const result = await idx.db.domains
+            // .where({ name: 'Products' })
+            .offset(offset)
+            .limit(size)
+            .sortBy('name');
+            
+        const response = {
+            page,
+            size,
+            total,
+            result,
+        };
+        console.log(response)
+        return response;
     }
 
     static async remove(id: string) {

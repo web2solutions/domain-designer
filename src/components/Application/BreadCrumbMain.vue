@@ -11,11 +11,10 @@ defineProps<{
 </script>
 
 <template>
-  <div class="box">
-    <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+  <div class="box breadcumb-main">
+    <nav class="breadcrumb has-succeeds-separator is-fixed-top is-dark" aria-label="breadcrumbs">
       <ul>
         <li>
-          
           <router-link to="/" class="has-icon">
             <span class="icon"><i class="mdi mdi-monitor-dashboard"></i></span>
             <span v-if="childName !== ''" class="menu-item-label">{{ languageStore.default.application.Home }}</span>
@@ -28,3 +27,14 @@ defineProps<{
     </nav>    
   </div>
 </template>
+<style scope>
+.breadcumb-main {
+  position: fixed;
+  width: 100%;
+  top: 20;
+  left: 30;
+  overflow:hidden;
+  z-index: 10;
+  opacity: 0.9;
+}
+</style>

@@ -3,7 +3,7 @@ import { useLanguageStore } from '@/stores';
 import router from '@/router';
 
 const languageStore = useLanguageStore();
-console.log('<><><><><><><><><><><>', router.options.routes)
+// console.log('<><><><><><><><><><><>', router.options.routes)
 </script>
 
 <template>
