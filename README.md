@@ -10,3 +10,8 @@
 ```bash
     npm run dev
 ```
+
+
+### Online version:
+
+https://domain-designer.vercel.app/domains/list
