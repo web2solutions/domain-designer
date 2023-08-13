@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <footer class="footer">
+    <footer class="footer is-fullheight">
         <div class="container-fluid">
           <div class="level">
             <div class="level-left">
@@ -27,3 +27,14 @@
         </div>
       </footer>
 </template>
+<style scope>
+footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  overflow:hidden;
+  z-index: 9999;
+  opacity: 0.8;
+}
+</style>

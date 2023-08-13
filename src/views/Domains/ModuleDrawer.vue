@@ -6,6 +6,7 @@ import router from '@/router';
 
 const route = ref(router.currentRoute)
 
+
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
   icon: RouteRecordName | null | undefined,

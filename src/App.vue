@@ -3,11 +3,17 @@ import { ref, onMounted } from 'vue';
 import router from '@/router';
 import { RouterView } from 'vue-router'
 import { NavBarMain, AsideMenuMain, FooterMain } from '@/components/Application/index'
+import { useDomainsStore } from '@/stores/domains.store';
 
 
 const route = ref(router.currentRoute)
 
-onMounted(() => {
+onMounted(async () => {
+
+
+
+  const domainStore = useDomainsStore();
+  await domainStore.sync();
 
 /* Aside: submenus toggle */
   Array.from(document.getElementsByClassName('menu is-menu-main')).forEach(function (el) {
@@ -69,3 +75,4 @@ onMounted(() => {
   <RouterView />
   <FooterMain />
 </template>
+@/database/IDX

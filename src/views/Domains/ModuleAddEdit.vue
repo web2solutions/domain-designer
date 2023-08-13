@@ -1,14 +1,138 @@
 <script setup lang="ts">
+import { ref, onMounted, nextTick, watch } from 'vue';
 import type { RouteRecordName } from 'vue-router';
+import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+import router from '@/router'
 import { AlertMessage } from '@/components/Application/';
-// import { useAlertStore } from '@/stores';
-// const alertStore = useAlertStore();
-// alertStore.error('Test');
+import { useDomainsStore } from '@/stores';
+import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
+import { useAlertStore } from '@/stores';
+
+// const routeRef = ref(router.currentRoute);
+const route = useRoute();
+
+const alertStore = useAlertStore();
+const domainStore = useDomainsStore();
+const input_name = ref(null);
+const input_name_invalid = ref(false);
+const input_description = ref(null);
+const input_description_invalid = ref(false);
+let isUpdate = false;
+
+const id = route.params.id ? route.params.id.toString() : undefined;
+
 
 defineProps<{
   childName: RouteRecordName | null | undefined,
   icon: string,
 }>()
+
+watch(
+  () => route.params.id,
+  async id => {    
+    if(!id) {
+      reset();
+      isUpdate = false;
+    }
+  }
+)
+
+onMounted(async () => {
+  input_name.value.focus();
+  if (id) {
+    const record = await domainStore.getRecord(id as string);
+    if(record) {
+      input_name.value.value = record?.name;  
+      input_description.value.value = record?.description;
+      isUpdate = true;
+      return;
+    } else {
+      alertStore.error('Document not found');
+      goToMainView();
+    } 
+  }
+
+  reset();
+  isUpdate = false;
+});
+
+async function goToMainView() {
+  await router.push('/domains/list');
+}
+
+function validate (event) {
+  const field = event.target;
+  if (field.value.trim() === '') {
+    if(field.name === 'input_name') {
+      input_name_invalid.value = true;
+    } else if(field.name === 'input_description') {
+      input_description_invalid.value = true;
+    }
+    return false;
+  } else {
+    if(field.name === 'input_name') {
+      input_name_invalid.value = false;
+    } else if(field.name === 'input_description') {
+      input_description_invalid.value = false;
+    }
+  }
+
+  return true;
+}
+
+function getHash() {
+  const name = input_name.value.value;
+  const description = input_description.value.value || '';
+  if(name === '') {
+    input_name_invalid.value = true;
+    throw new Error('name is mandatory')
+  }
+
+  input_name_invalid.value = false;
+  input_description_invalid.value = false;
+  return {
+    name,
+    description,
+  }
+}
+
+async function save() {
+  const data = getHash();
+  const record = await domainStore.create(data as IDomainCreateDTO);
+  alertStore.success(`The new domain ${record?.name} is saved.`);
+}
+
+async function update() {
+  const id = route.params.id;
+  const data = getHash();
+  const record = await domainStore.update(id as string, data as IDomainCreateDTO);
+  alertStore.success(`The domain ${record?.name} is updated.`);
+}
+
+async function submit(event: Event, close?: boolean) {
+  event.preventDefault();
+  try {
+    if (isUpdate) {
+      await update();
+    } else {
+      await save();
+      reset();
+    }
+    
+    if(close) {
+      goToMainView();
+    }
+  } catch (error: any) {
+    alertStore.error(error.message);
+  }
+}
+
+function reset() {
+  input_name.value.value = '';
+  input_name_invalid.value = false;
+  input_description.value.value = '';
+  input_description_invalid.value = false;
+}
 </script>
 
 <template>
@@ -22,88 +146,51 @@ defineProps<{
     </header>
     <div class="card-content">
       <form method="get">
+        <!-- start input -->
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label">From</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <p class="control is-expanded has-icons-left">
-                <input class="input" type="text" placeholder="Name">
-                <span class="icon is-small is-left"><i class="mdi mdi-account"></i></span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control is-expanded has-icons-left has-icons-right">
-                <input class="input is-success" type="email" placeholder="Email" value="alex@smith.com">
-                <span class="icon is-small is-left"><i class="mdi mdi-mail"></i></span>
-                <span class="icon is-small is-right"><i class="mdi mdi-check"></i></span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="field is-horizontal">
-          <div class="field-label"></div>
-          <div class="field-body">
-            <div class="field is-expanded">
-              <div class="field has-addons">
-                <p class="control">
-                  <a class="button is-static">
-                    +44
-                  </a>
-                </p>
-                <p class="control is-expanded">
-                  <input class="input" type="tel" placeholder="Your phone number">
-                </p>
-              </div>
-              <p class="help">Do not enter the first zero</p>
-            </div>
-          </div>
-        </div>
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">Department</label>
-          </div>
-          <div class="field-body">
-            <div class="field is-narrow">
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select>
-                    <option>Business development</option>
-                    <option>Marketing</option>
-                    <option>Sales</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr>
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">Subject</label>
+            <label class="label">Name</label>
           </div>
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input is-danger" type="text" placeholder="e.g. Partnership opportunity">
+                <input 
+                  :class="'input ' + (input_name_invalid ? 'is-danger' : '')" 
+                  name="input_name" 
+                  ref="input_name" 
+                  type="text" 
+                  placeholder="Type a name for this domain"
+                  @change="validate($event)"
+                  @blur="validate($event)"
+                >
               </div>
-              <p class="help is-danger">
+              <p v-if="input_name_invalid" class="help is-danger">
                 This field is required
               </p>
             </div>
           </div>
         </div>
-
+        <!-- end input -->
+        <!-- start input -->
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label">Question</label>
+            <label class="label">Description</label>
           </div>
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <textarea class="textarea" placeholder="Explain how we can help you"></textarea>
+                <textarea 
+                  :class="'textarea ' + (input_description_invalid ? 'is-danger' : '')"
+                  name="input_description" 
+                  ref="input_description" 
+                  placeholder="Type a description for this domain"
+                  @change="validate($event)"
+                  @blur="validate($event)"
+                ></textarea>
               </div>
+              <p v-if="input_description_invalid" class="help is-danger">
+                This field is required
+              </p>
             </div>
           </div>
         </div>
@@ -114,15 +201,41 @@ defineProps<{
           </div>
           <div class="field-body">
             <div class="field">
-              <div class="field is-grouped">
+              <div class="field is-grouped is-grouped-right">
                 <div class="control">
-                  <button type="submit" class="button is-primary">
-                    <span>Submit</span>
+                  <button 
+                    type="submit" 
+                    class="button is-primary"
+                    @click="submit($event, true)"
+                  >
+                    <span>Save and close</span>
                   </button>
                 </div>
                 <div class="control">
-                  <button type="button" class="button is-primary is-outlined">
+                  <button 
+                    type="submit" 
+                    class="button is-primary"
+                    @click="submit($event)"
+                  >
+                    <span>Save</span>
+                  </button>
+                </div>
+                <div class="control">
+                  <button 
+                    type="button" 
+                    class="button is-primary is-outlined"
+                    @click="reset()"
+                  >
                     <span>Reset</span>
+                  </button>
+                </div>
+                <div class="control">
+                  <button 
+                    type="button" 
+                    class="button is-danger is-outlined"
+                    @click="goToMainView()"
+                  >
+                    <span>Cancel</span>
                   </button>
                 </div>
               </div>

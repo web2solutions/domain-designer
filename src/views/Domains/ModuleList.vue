@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 // import type { Store } from 'pinia';
-import { AlertMessage } from '@/components/Application/';
+import { AlertMessage, ModalMessage } from '@/components/Application/';
 import { CrudList, CrudToolbar } from '@/components/CRUD/';
 import { useDomainsStore } from '@/stores';
 
@@ -21,6 +21,8 @@ defineProps<{
   childName: RouteRecordName | null | undefined,
   icon: string,
 }>()
+
+
 </script>
 
 <template>
@@ -29,4 +31,6 @@ defineProps<{
     <CrudToolbar v-bind:childName="childName" v-bind:icon="icon" />
     <CrudList :store="domainStoreRef" />
   </div>
+  <ModalMessage />
+  
 </template>

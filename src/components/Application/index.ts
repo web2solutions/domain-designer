@@ -1,4 +1,5 @@
 export { default as AlertMessage } from './AlertMessage.vue';
+export { default as ModalMessage } from './ModalMessage.vue';
 export { default as AsideMenuMain } from './AsideMenuMain.vue';
 export { default as BreadCrumbMain } from './BreadCrumbMain.vue';
 export { default as FooterMain } from './FooterMain.vue';
