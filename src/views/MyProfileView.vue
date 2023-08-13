@@ -47,7 +47,7 @@ defineProps<{
                     <div class="field-body">
                       <div class="field">
                         <div class="control">
-                          <input type="text" autocomplete="on" name="name" value="John Doe" class="input" required>
+                          <input type="text" autocomplete="on" name="name" value="Jose Almeida" class="input" required>
                         </div>
                         <p class="help">Required. Your name</p>
                       </div>
@@ -93,13 +93,13 @@ defineProps<{
               </header>
               <div class="card-content">
                 <div class="is-user-avatar image has-max-width is-aligned-center">
-                  <img src="https://avatars.dicebear.com/v2/initials/john-doe.svg" alt="John Doe">
+                  <img src="https://avatars.dicebear.com/v2/initials/jose-almeida.svg" alt="Jose Almeida">
                 </div>
                 <hr>
                 <div class="field">
                   <label class="label">Name</label>
                   <div class="control is-clearfix">
-                    <input type="text" readonly value="John Doe" class="input is-static">
+                    <input type="text" readonly value="Jose Almeida" class="input is-static">
                   </div>
                 </div>
                 <hr>

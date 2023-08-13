@@ -19,7 +19,7 @@
             <div class="level-right">
               <div class="level-item">
                 <div class="logo">
-                  <img src="../../../img/minds.svg" alt="Xpertminds">
+                  <img src="@/assets/minds.svg" alt="Xpertminds">
                 </div>
               </div>
             </div>
