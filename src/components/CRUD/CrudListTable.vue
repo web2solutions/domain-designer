@@ -55,7 +55,7 @@ function onChangePageNumber (page: number) {
                 <div class="level-left">
                   <div class="level-item">
                     <div>
-                      <b>Empty table.</b>
+                      <b>No records ...</b>
                     </div>
                   </div>
                 </div>
@@ -83,7 +83,7 @@ function onChangePageNumber (page: number) {
                   class="pagination-link  is-current" 
                   aria-current="page"
                   :aria-label="'Goto page '+ page"
-                  @click="onChangePageNumber($event);"
+                  @click="onChangePageNumber(page);"
                 >
                   {{ page }}
                 </button>

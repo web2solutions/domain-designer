@@ -52,6 +52,39 @@ export const routes = [
     ]
   },
   {
+    path: '/entities',
+    props: { moduleName: 'Entities', icon: 'mdi-pencil-ruler' },
+    name: 'Entities',
+    component: () => import('@/views/Entities/ModuleDrawer.vue'),
+    children: [
+        { 
+          path: 'list',
+          name: 'List Entities',
+          component: () => import('@/views/Entities/ModuleList.vue'),
+          props: { childName: 'List Entities', icon: 'mdi-table' },
+        },
+        { 
+          path: 'create',
+          name: 'New Entity',
+          component: () => import('@/views/Entities/ModuleAddEdit.vue'),
+          props: { childName: 'New Entity', icon: 'mdi-ballot' },
+        }, 
+        { 
+          path: 'update/:id',
+          name: 'Update Entity',
+          component: () => import('@/views/Entities/ModuleAddEdit.vue'),
+          props: { childName: 'Update Entity', icon: 'mdi-ballot' },
+        },
+        { 
+          path: 'overview/:id',
+          name: 'Entity Overview',
+          component: () => import('@/views/Entities/EntityOverview.vue'),
+          props: { childName: 'Entity Overview', icon: 'mdi-ballot' },
+        },
+        // 
+    ]
+  },
+  {
     path: '/profile',
     name: 'My Profile',
     component: () => import('@/views/MyProfileView.vue'),

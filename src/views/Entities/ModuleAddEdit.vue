@@ -2,14 +2,14 @@
 import { ref, onMounted,  watch } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { useRoute } from 'vue-router';
-import router from '@/router'
-import { useDomainsStore, useAlertStore } from '@/stores';
-import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
+import router from '../../router';
+import { useEntitiesStore, useAlertStore } from '../../stores';
+import type { IEntityCreateDTO } from '../../models/IEntityCreateDTO';
 
 const route = useRoute();
 
 const alertStore = useAlertStore();
-const domainStore = useDomainsStore();
+const entityStore = useEntitiesStore();
 const input_name = ref(null);
 const input_name_invalid = ref(false);
 const input_description = ref(null);
@@ -37,8 +37,10 @@ onMounted(async () => {
   if(input_name.value) {
     (input_name.value as HTMLInputElement).focus();
   }
+  
   if (id) {
-    const record = await domainStore.getRecord(id as string);
+    const record = await entityStore.getRecord(id as string);
+    
     if(record) {
       if(input_name.value) {
         (input_name.value as HTMLInputElement).value = record?.name;
@@ -59,7 +61,7 @@ onMounted(async () => {
 });
 
 async function goToMainView() {
-  await router.push('/domains/list');
+  await router.push('/entities/list');
 }
 
 function validate (event: any) {
@@ -110,15 +112,15 @@ function getHash() {
 
 async function save() {
   const data = getHash();
-  const record = await domainStore.create(data as IDomainCreateDTO);
-  alertStore.success(`The new domain ${record?.name} is saved.`);
+  const record = await entityStore.create(data as IEntityCreateDTO);
+  alertStore.success(`The new entity ${record?.name} is saved.`);
 }
 
 async function update() {
   const id = route.params.id;
   const data = getHash();
-  const record = await domainStore.update(id as string, data as IDomainCreateDTO);
-  alertStore.success(`The domain ${record?.name} is updated.`);
+  const record = await entityStore.update(id as string, data as IEntityCreateDTO);
+  alertStore.success(`The entity ${record?.name} is updated.`);
 }
 
 async function submit(event: Event, close?: boolean) {
@@ -176,7 +178,7 @@ function reset() {
                   name="input_name" 
                   ref="input_name" 
                   type="text" 
-                  placeholder="Type a name for this domain"
+                  placeholder="Type a name for this entity"
                   @change="validate($event)"
                   @blur="validate($event)"
                 >
@@ -200,7 +202,7 @@ function reset() {
                   :class="'textarea ' + (input_description_invalid ? 'is-danger' : '')"
                   name="input_description" 
                   ref="input_description" 
-                  placeholder="Type a description for this domain"
+                  placeholder="Type a description for this entity"
                   @change="validate($event)"
                   @blur="validate($event)"
                 ></textarea>
