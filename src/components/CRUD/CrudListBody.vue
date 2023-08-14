@@ -6,6 +6,11 @@ const props = defineProps<{
 </script>
 <template>
     <tbody>
+        <tr>
+          <td colspan="7">
+            <progress v-if="store.loading" class="progress is-small is-primary" max="100">15%</progress>
+          </td>
+        </tr>
         <tr v-for="record in props.store.records" :key="record.id">
           <td class="is-checkbox-cell">
             <label class="b-checkbox checkbox">

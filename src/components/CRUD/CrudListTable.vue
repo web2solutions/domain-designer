@@ -102,3 +102,8 @@ function onChangePageNumber (page: number) {
         </div>
       </div>
 </template>
+<style scoped>
+.boxprogress{
+  width: 100%;
+}
+</style>

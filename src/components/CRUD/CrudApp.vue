@@ -61,7 +61,7 @@ onMounted(async() => {
 </script>
 <template>
     <div class="card has-table">
-        <CrudToolbar :appName="appName" :icon="icon" />
+        <CrudToolbar :appName="appName" :icon="icon" :store="store" />
         <CrudList :store="store" />
     </div>
 </template>

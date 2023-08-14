@@ -4,6 +4,7 @@ import type { RouteRecordName } from 'vue-router';
 defineProps<{
   appName: RouteRecordName | null | undefined,
   icon: string,
+  store: any,
 }>()
 </script>
 
@@ -20,7 +21,7 @@ defineProps<{
           <button type="button" class="button">
             <span class="icon"><i class="mdi mdi-close-circle"></i></span>
           </button>
-          <button type="button" class="button">
+          <button type="button" class="button" @click="store.sync()">
             <span class="icon"><i class="mdi mdi-reload"></i></span>
           </button>
         </p>

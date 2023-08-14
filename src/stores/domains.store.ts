@@ -39,7 +39,8 @@ export const useDomainsStore = defineStore({
         total: 0,
         numberOfPages: 0,
         pageTotalRecords: [1],
-        pages: []
+        pages: [],
+        loading: false,
     }),
     actions: {
         reset () {
@@ -53,6 +54,7 @@ export const useDomainsStore = defineStore({
             this.numberOfPages = 0;
             this.pageTotalRecords = [1];
             this.pages = [];
+            this.loading = false;
         },
         setPaging(query: IQuery) {
             const { page, size } = query;
@@ -65,15 +67,18 @@ export const useDomainsStore = defineStore({
         },
         
         async create(record: IDomainCreateDTO) {
+            this.loading = true;
             const document = new DomainModel(record);
             await document.save();
             const rawDocument = document.toJSON();
             // console.log(rawDocument);
             this.records.push(rawDocument);
+            this.loading = false;
             return rawDocument;
         },
 
         async update (id: string, record: IDomainCreateDTO) {
+            this.loading = true;
             const document = await DomainModel.update(id, record);
             const rawDocument = document;
             // console.log(rawDocument);
@@ -83,6 +88,7 @@ export const useDomainsStore = defineStore({
                 }
                 return record;
             });
+            this.loading = false;
             return rawDocument;
         },
 
@@ -93,6 +99,7 @@ export const useDomainsStore = defineStore({
         },
 
         async remove (id: string) {
+            this.loading = true
             const { isConfirmed } = await Swal.fire({
                 title: 'Delete domain',
                 html: 'Do you really want to delete it?',
@@ -109,6 +116,9 @@ export const useDomainsStore = defineStore({
                 await this.sync();
                 const alertStore = useAlertStore();
                 alertStore.warning('The document is deleted')
+                this.loading = false;
+            } else {
+                this.loading = false;
             }
         },
 
@@ -122,6 +132,7 @@ export const useDomainsStore = defineStore({
 
         async sync() {
             try {
+                this.loading = true;
                 const paging = {
                     page: this.page,
                     size: this.pageSize,
@@ -135,9 +146,14 @@ export const useDomainsStore = defineStore({
                 for(let x = 1; x <= this.numberOfPages; x++) {
                     this.pageTotalRecords.push(x);
                 }
-            } catch (error) {
-                console.log(error)
+                this.loading = false;
+            } catch (error: any) {
+                console.log(error);
+                const alertStore = useAlertStore();
+                alertStore.error(error.message);
+                this.loading = false;
             } 
+            
         }
     }
 });

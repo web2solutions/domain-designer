@@ -57,7 +57,7 @@ export const routes = [
     component: () => import('@/views/MyProfileView.vue'),
     props: { moduleName: 'My Profile', icon: 'mdi-account-box-outline' },
   },
-  {
+  /** {
     path: '/staff',
     props: { moduleName: 'Staff', icon: 'mdi-account-multiple-outline' },
     name: 'Staff',
@@ -178,7 +178,7 @@ export const routes = [
     name: 'Appointments',
     component: () => import('@/views/Domains/ModuleDrawer.vue'),
     children: []
-  },
+  }, */
   { 
     name: 'wildcard', 
     path: '/:pathMatch(.*)*', 
