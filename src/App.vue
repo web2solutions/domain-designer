@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-// import router from '@/router';
 import { RouterView } from 'vue-router'
 import { NavBarMain, AsideMenuMain, FooterMain } from '@/components/Application/index';
-
-
-// const route = ref(router.currentRoute)
 
 onMounted(async () => {
 
@@ -51,44 +47,12 @@ onMounted(async () => {
       dropdownIcon.classList.toggle('mdi-close');
     });
   });
-  /* Modal: open */
-
-  Array.from(document.getElementsByClassName('jb-modal')).forEach(function (el) {
-    el.addEventListener('click', function (e) {
-      const modalTarget = (e.currentTarget as HTMLElement).getAttribute('data-target') || '';
-      const el = document.getElementById(modalTarget);
-      if(el != null) {
-        el.classList.add('is-active');
-      }
-      document.documentElement.classList.add('is-clipped');
-    });
-  });
-  /* Modal: close */
-
-  Array.from(document.getElementsByClassName('jb-modal-close')).forEach(function (el) {
-    el.addEventListener('click', function (e) {
-      const el = e.currentTarget as HTMLElement;
-      if (el) {
-        const closest = el.closest('.modal');
-        if(close != null) {
-          closest?.classList.remove('is-active');
-        }
-        
-      }
-      
-      document.documentElement.classList.remove('is-clipped');
-    });
-  });
-
 });
 
 </script>
-
-
 <template>
   <NavBarMain />
   <AsideMenuMain />  
   <RouterView />
   <FooterMain />
 </template>
-@/database/IDX

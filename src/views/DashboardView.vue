@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/*global Chart*/
 
 import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
@@ -39,7 +40,8 @@ onMounted(async() => {
     const hEl: HTMLElement | null = document?.getElementById('big-line-chart')
     const canvas: HTMLCanvasElement | null = hEl ? hEl as HTMLCanvasElement : null;
     const ctx: CanvasRenderingContext2D | null | undefined = canvas?.getContext('2d');
-    new Chart(ctx, {
+    /* eslint-disable */
+    new window.Chart(ctx, {
       type: 'line',
       data: {
         datasets: [{

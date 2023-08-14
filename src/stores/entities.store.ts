@@ -4,6 +4,7 @@ import type { IEntityCreateDTO } from '@/models/IEntityCreateDTO';
 import { EntityModel } from '@/models/EntityModel'
 import type { IQuery } from './IQuery';
 import { useAlertStore } from '@/stores/alert.store';
+import type { EntitySchema } from '@/database/EntitySchema';
 
 export const useEntitiesStore = defineStore({
     id: 'entities',
@@ -35,7 +36,7 @@ export const useEntitiesStore = defineStore({
                 type: 'date',
             },
         ],
-        records: [],
+        records: [ ...[] as EntitySchema[] ],
         record: {},
         filter: false,
         page: 1,

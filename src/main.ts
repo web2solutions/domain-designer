@@ -1,4 +1,5 @@
 import './assets/main.css';
+window.global ||= window;
 import { idx } from '@/database/IDX'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

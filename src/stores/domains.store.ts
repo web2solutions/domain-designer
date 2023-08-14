@@ -4,6 +4,7 @@ import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
 import { DomainModel } from '@/models/DomainModel'
 import type { IQuery } from './IQuery';
 import { useAlertStore } from '@/stores/alert.store';
+import type { DomainSchema } from '@/database/DomainSchema';
 
 export const useDomainsStore = defineStore({
     id: 'domains',
@@ -30,7 +31,7 @@ export const useDomainsStore = defineStore({
                 type: 'date',
             },
         ],
-        records: [],
+        records: [ ...[] as DomainSchema[]],
         record: {},
         filter: false,
         page: 1,
