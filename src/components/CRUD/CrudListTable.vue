@@ -1,22 +1,16 @@
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import type { LocationQueryRaw } from 'vue-router';
 import { CrudListHead, CrudListBody } from './';
 import type { IQueryRequest } from '@/stores/IQueryRequest'; 
-import type { IPagingRequest } from '@/stores/IPagingRequest';
 
 const props = defineProps<{
   store: any,
 }>()
 
-
 const route = useRoute();
-// console.log(route.query);
-
-  
 
 function onChangePageSize (size: number) {
     // const id = route.params.id ? route.params.id.toString() : undefined;

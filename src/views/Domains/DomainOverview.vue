@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { useRoute } from 'vue-router';
 import { CrudApp } from '@/components/CRUD/';
@@ -21,10 +21,7 @@ onMounted(async () => {
     console.log(record);
   }
 });
-
-
 </script>
-
 <template>
     <DomainOverviewHeader :store="domainStore" :appName="childName" :icon="icon" />
     <CrudApp :store="domainStore" appName="Entities" :icon="icon" />

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import router from '@/router';
+import { onMounted } from 'vue';
+// import router from '@/router';
 import { RouterView } from 'vue-router'
 import { NavBarMain, AsideMenuMain, FooterMain } from '@/components/Application/index';
 
 
-const route = ref(router.currentRoute)
+// const route = ref(router.currentRoute)
 
 onMounted(async () => {
 
@@ -13,8 +13,8 @@ onMounted(async () => {
   Array.from(document.getElementsByClassName('menu is-menu-main')).forEach(function (el) {
     Array.from(el.getElementsByClassName('has-dropdown-icon')).forEach(function (elA) {
       elA.addEventListener('click', function (e) {
-        var dropdownIcon = e.currentTarget?.getElementsByClassName('dropdown-icon')[0].getElementsByClassName('mdi')[0];
-        e.currentTarget.parentNode.classList.toggle('is-active');
+        const dropdownIcon = (e.currentTarget as HTMLElement)?.getElementsByClassName('dropdown-icon')[0].getElementsByClassName('mdi')[0];
+        (e.currentTarget as HTMLElement).parentNode.classList.toggle('is-active');
         dropdownIcon.classList.toggle('mdi-plus');
         dropdownIcon.classList.toggle('mdi-minus');
       });
@@ -24,7 +24,7 @@ onMounted(async () => {
 
   Array.from(document.getElementsByClassName('jb-aside-mobile-toggle')).forEach(function (el) {
     el.addEventListener('click', function (e) {
-      var dropdownIcon = e.currentTarget.getElementsByClassName('icon')[0].getElementsByClassName('mdi')[0];
+      const dropdownIcon = (e.currentTarget as HTMLElement).getElementsByClassName('icon')[0].getElementsByClassName('mdi')[0];
       document.documentElement.classList.toggle('has-aside-mobile-expanded');
       dropdownIcon.classList.toggle('mdi-forwardburger');
       dropdownIcon.classList.toggle('mdi-backburger');
@@ -34,8 +34,14 @@ onMounted(async () => {
 
   Array.from(document.getElementsByClassName('jb-navbar-menu-toggle')).forEach(function (el) {
     el.addEventListener('click', function (e) {
-      var dropdownIcon = e.currentTarget.getElementsByClassName('icon')[0].getElementsByClassName('mdi')[0];
-      document.getElementById(e.currentTarget.getAttribute('data-target')).classList.toggle('is-active');
+      const dropdownIcon = (e.currentTarget as HTMLElement).getElementsByClassName('icon')[0].getElementsByClassName('mdi')[0];
+      const el = (e.currentTarget as HTMLElement);
+      const dt = el.getAttribute('data-target') || '';
+      const elTarget = document.getElementById(dt);
+      if(elTarget != null) {
+        elTarget.classList.toggle('is-active');
+      }
+      
       dropdownIcon.classList.toggle('mdi-dots-vertical');
       dropdownIcon.classList.toggle('mdi-close');
     });
@@ -44,8 +50,11 @@ onMounted(async () => {
 
   Array.from(document.getElementsByClassName('jb-modal')).forEach(function (el) {
     el.addEventListener('click', function (e) {
-      var modalTarget = e.currentTarget.getAttribute('data-target');
-      document.getElementById(modalTarget).classList.add('is-active');
+      const modalTarget = (e.currentTarget as HTMLElement).getAttribute('data-target') || '';
+      const el = document.getElementById(modalTarget);
+      if(el != null) {
+        el.classList.add('is-active');
+      }
       document.documentElement.classList.add('is-clipped');
     });
   });
@@ -53,7 +62,7 @@ onMounted(async () => {
 
   Array.from(document.getElementsByClassName('jb-modal-close')).forEach(function (el) {
     el.addEventListener('click', function (e) {
-      e.currentTarget.closest('.modal').classList.remove('is-active');
+      (e.currentTarget as HTMLElement).closest('.modal').classList.remove('is-active');
       document.documentElement.classList.remove('is-clipped');
     });
   });

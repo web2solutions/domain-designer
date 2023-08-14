@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { useRoute } from 'vue-router';
 import { CrudApp } from '@/components/CRUD/';
-import { default as DomainOverviewHeader } from './DomainOverviewHeader.vue'
-import { useDomainsStore } from '@/stores';
+import { default as EntityOverviewHeader } from './EntityOverviewHeader.vue'
+import { useEntitiesStore } from '@/stores';
 
-const domainStore = useDomainsStore();
+const domainStore = useEntitiesStore();
 const route = useRoute();
 const id = route.params.id ? route.params.id.toString() : undefined;
 
@@ -26,6 +26,6 @@ onMounted(async () => {
 </script>
 
 <template>
-    <DomainOverviewHeader :store="domainStore" :appName="childName" :icon="icon" />
+    <EntityOverviewHeader :store="domainStore" :appName="childName" :icon="icon" />
     <CrudApp :store="domainStore" appName="Entities" :icon="icon" />
 </template>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { session } from '.';
+// import { session } from '.';
 
 const enUS: Record<string, any> = {
     application: {
@@ -25,7 +25,7 @@ const ptBR: Record<string, any> = {
 
 type languages = 'en-US' | 'pt-BR';
 
-const implementedLanguages: Record<languages, Record<string, any>> = {
+export const implementedLanguages: Record<languages, Record<string, any>> = {
     'en-US': enUS,
     'pt-BR': ptBR,
 };
