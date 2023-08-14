@@ -14,7 +14,12 @@ onMounted(async () => {
     Array.from(el.getElementsByClassName('has-dropdown-icon')).forEach(function (elA) {
       elA.addEventListener('click', function (e) {
         const dropdownIcon = (e.currentTarget as HTMLElement)?.getElementsByClassName('dropdown-icon')[0].getElementsByClassName('mdi')[0];
-        (e.currentTarget as HTMLElement).parentNode.classList.toggle('is-active');
+        const el = (e.currentTarget as HTMLElement);
+        const parent = el.parentNode as HTMLElement;
+        if(parent) {
+          parent.classList.toggle('is-active');
+        }
+        
         dropdownIcon.classList.toggle('mdi-plus');
         dropdownIcon.classList.toggle('mdi-minus');
       });
@@ -62,7 +67,15 @@ onMounted(async () => {
 
   Array.from(document.getElementsByClassName('jb-modal-close')).forEach(function (el) {
     el.addEventListener('click', function (e) {
-      (e.currentTarget as HTMLElement).closest('.modal').classList.remove('is-active');
+      const el = e.currentTarget as HTMLElement;
+      if (el) {
+        const closest = el.closest('.modal');
+        if(close != null) {
+          closest?.classList.remove('is-active');
+        }
+        
+      }
+      
       document.documentElement.classList.remove('is-clipped');
     });
   });

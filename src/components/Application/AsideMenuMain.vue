@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useLanguageStore } from '@/stores';
 import router from '@/router';
-
 const languageStore = useLanguageStore();
-// console.log('<><><><><><><><><><><>', router.options.routes)
 </script>
 
 <template>
@@ -24,7 +22,7 @@ const languageStore = useLanguageStore();
                 <li v-if="route.children">
                   <!-- <p class="menu-label">{{ route.name }}</p> -->
                   <a class="has-icon has-dropdown-icon">
-                    <span class="icon"><i :class="'mdi ' + route.props.icon"></i></span>
+                    <span class="icon"><i :class="'mdi ' + (route.props as any).icon"></i></span>
                     <span class="menu-item-label">{{ route.name }}</span>
                     <div class="dropdown-icon">
                       <span class="icon"><i class="mdi mdi-plus"></i></span>
@@ -34,7 +32,7 @@ const languageStore = useLanguageStore();
                     <template v-for="cCoute in route.children" :key="cCoute.name">
                       <li v-if="cCoute.path.indexOf(':id') < 0">
                         <router-link :to="route.path + '/' + cCoute.path" class="has-icon">
-                          <span class="icon"><i :class="'mdi ' + cCoute.props.icon"></i></span>
+                          <span class="icon"><i :class="'mdi ' + (cCoute.props as any).icon"></i></span>
                           <span class="menu-item-label">{{ cCoute.name }}</span>
                         </router-link>
                       </li>
@@ -43,7 +41,7 @@ const languageStore = useLanguageStore();
                 </li>
                 <li v-else>
                   <router-link :to="route.path" class="has-icon">
-                    <span class="icon"><i :class="'mdi ' + route.props.icon"></i></span>
+                    <span class="icon"><i :class="'mdi ' + (route.props as any).icon"></i></span>
                     <span class="menu-item-label">{{ route.name }}</span>
                   </router-link>
                 </li>

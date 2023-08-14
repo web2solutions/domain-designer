@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw }  from 'vue-router';
 import DashboardView from '../views/DashboardView.vue'
 // import DomainsView from '../views/DomainsView.vue'
 
@@ -223,7 +224,7 @@ export const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: 'is-active router-link-active',
-  routes,
+  routes: routes as RouteRecordRaw[],
 })
 
 export default router

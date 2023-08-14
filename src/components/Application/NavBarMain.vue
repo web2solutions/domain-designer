@@ -61,9 +61,9 @@ function onClickLanguage (e: Event) {
             <div class="navbar-item has-dropdown has-dropdown-with-icons has-divider has-user-avatar is-hoverable">
               <a class="navbar-link is-arrowless">
                 <div class="is-user-avatar">
-                  <img src="https://avatars.dicebear.com/v2/initials/jose-eduardo.svg" :alt="session.user.name">
+                  <img src="https://avatars.dicebear.com/v2/initials/jose-eduardo.svg" :alt="sessionStore.name">
                 </div>
-                <div class="is-user-name"><span>{{ session.user.name }}</span></div>
+                <div class="is-user-name"><span>{{ sessionStore.name }}</span></div>
                 <span class="icon"><i class="mdi mdi-chevron-down"></i></span>
               </a>
               <div class="navbar-dropdown">

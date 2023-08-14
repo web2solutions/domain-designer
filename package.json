@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bulma": "^0.9.4",
+    "chart.js": "^4.3.3",
     "dexie": "^3.2.4",
     "pinia": "^2.1.4",
     "sweetalert2": "^11.7.21",

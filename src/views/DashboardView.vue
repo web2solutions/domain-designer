@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { BreadCrumbMain } from '@/components/Application/index';
