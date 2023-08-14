@@ -49,10 +49,25 @@ function onChangePageNumber (page: number) {
 <template>
     <div class="b-table has-pagination">
         <div class="table-wrapper has-mobile-cards">
-          <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
-            <CrudListHead :store="store" />
-            <CrudListBody :store="store" />
-          </table>
+          <template v-if="store.records.length === 0">
+            <div class="notification is-light">
+              <div class="level">
+                <div class="level-left">
+                  <div class="level-item">
+                    <div>
+                      <b>Empty table.</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+              <CrudListHead :store="store" />
+              <CrudListBody :store="store" />
+            </table>
+          </template>
         </div>
         <div class="box">
           <nav class="pagination is-small" role="navigation" aria-label="pagination">

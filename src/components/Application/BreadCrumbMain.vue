@@ -12,7 +12,7 @@ defineProps<{
 
 <template>
   <div class="box breadcumb-main">
-    <nav class="breadcrumb has-succeeds-separator is-fixed-top is-dark" aria-label="breadcrumbs">
+    <nav class="breadcrumb has-succeeds-separator is-fixed-top is-transparent" aria-label="breadcrumbs">
       <ul>
         <li>
           <router-link to="/" class="has-icon">
@@ -35,6 +35,6 @@ defineProps<{
   left: 30;
   overflow:hidden;
   z-index: 10;
-  opacity: 0.9;
+  background-color: #cfcece;
 }
 </style>
