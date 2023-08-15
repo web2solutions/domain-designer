@@ -5,13 +5,24 @@
 `NO-CODE` `Domain Designer` for Typescript DDD applications.
 
 
-### Run in dev mode:
+## Run in dev mode:
 
 ```bash
     npm run dev
 ```
 
 
-### Online version:
+## Online version:
 
 https://domain-designer.vercel.app/domains/list
+
+
+### Stack
+
+- Node.js
+- Typescript
+- Vue.js
+- Pinia
+- Bulma
+- IndexedDB
+- vite
