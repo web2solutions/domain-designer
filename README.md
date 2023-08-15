@@ -1,8 +1,8 @@
-# Domain-designer
+# Domain Designer
 
-`IN PROGRESS`.
+`This project is IN PROGRESS .......`.
 
-`NO-CODE` `Domain Designer` for Typescript DDD applications.
+`NO-CODE` `Domain Designer` for Typescript applications built under the `DDD` - `Domain Driven Design` principles.
 
 - Visually build application domains and it components
 - Generate Data Models
