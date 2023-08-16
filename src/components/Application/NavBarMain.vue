@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { faker } from '@faker-js/faker';
-const languageStore: any = useLanguageStore();
-const sessionStore: any = useSessionStore();
+
 import { domainsData } from'@/stores/domains';
 import { entitiesData } from'@/stores/entities';
-import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
 
-import {  useLanguageStore, useSessionStore, useAlertStore, useDomainsStore, useEntitiesStore } from '@/stores';
+import {  
+  useLanguageStore, 
+  useSessionStore, 
+  useAlertStore, 
+  useDomainsStore, 
+  useEntitiesStore
+} from '@/stores';
 
 const alertStore = useAlertStore();
 const domainStore = useDomainsStore();
 const entityStore = useEntitiesStore();
-
-function createRandomDomain(): IDomainCreateDTO {
-  return {
-    name: faker.commerce.department(),
-    description: faker.lorem.lines(2),
-  };
-}
+const languageStore: any = useLanguageStore();
+const sessionStore: any = useSessionStore();
 
 
 function onClickLanguage (e: Event) {
