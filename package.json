@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prepare": "husky install",
-    "commit": "git-cz",
+    "commit": "git add . && git-cz",
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
