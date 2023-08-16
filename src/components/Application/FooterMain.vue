@@ -11,9 +11,9 @@
                 © {{ (new Date()).getUTCFullYear() }}, QuiX Sales
               </div>
               <div class="level-item">
-                <!-- <a href="https://github.com/vikdiesel/admin-one-bulma-dashboard" style="height: 20px">
-                  <img src="https://img.shields.io/github/v/release/vikdiesel/admin-one-bulma-dashboard?color=%23999">
-                </a> -->
+                 <a href="https://github.com/web2solutions/domain-designer" style="height: 20px">
+                  <img src="https://img.shields.io/github/package-json/v/web2solutions/domain-designer/main">
+                </a>
               </div>
             </div>
             <div class="level-right">

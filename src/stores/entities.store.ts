@@ -5,6 +5,7 @@ import { EntityModel } from '@/models/EntityModel'
 import type { IQuery } from './IQuery';
 import { useAlertStore } from '@/stores/alert.store';
 import type { EntitySchema } from '@/database/EntitySchema';
+import { DomainModel } from '@/models/DomainModel';
 
 export const useEntitiesStore = defineStore({
     id: 'entities',
@@ -19,6 +20,10 @@ export const useEntitiesStore = defineStore({
                 name: 'domain_id',
                 label: 'Domain',
                 type: 'string',
+                foreignKey: {
+                    model: DomainModel,
+                    labelKey: 'name',
+                }
             },
             {
                 name: 'description',

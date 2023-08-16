@@ -9,7 +9,7 @@ const languageStore = useLanguageStore();
         <div class="aside-tools has-icon">          
           <div class="aside-tools-label">
             <router-link to="/">
-              <img src="/img/quix.svg" alt="QuiXSales" height="30" />
+              <img src="/img/dd.svg" alt="QuiXSales" />
             </router-link>
           </div>
         </div>

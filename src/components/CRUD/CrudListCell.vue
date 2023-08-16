@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { toHumanDate } from './utils';
+import { CrudListCellRelation } from '.';
 
-defineProps<{
+const props = defineProps<{
   name: string,
   label: string,
   type: string, // string, number, date
   value: any,
+  col: any,
+  store: any,
 }>()
+
+function getRecord(value: any){
+  return Promise.resolve(props.store.getRecord(value));
+}
 </script>
 <template>
     <template v-if="type === 'date'">
@@ -25,7 +32,18 @@ defineProps<{
       <td 
         :data-label="name"
       >
-        {{ value }}
+        <template v-if="col.foreignKey">
+          <CrudListCellRelation 
+            :name="name" 
+            :label="label" 
+            :type="type" 
+            :value="value" 
+            :col="col" 
+          />
+        </template>
+        <template v-else>
+          {{ value }}
+        </template>
       </td>
     </template>
     

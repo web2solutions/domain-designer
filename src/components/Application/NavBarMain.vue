@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { faker } from '@faker-js/faker';
-import { useLanguageStore, useSessionStore, session } from '@/stores';
 const languageStore: any = useLanguageStore();
 const sessionStore: any = useSessionStore();
 import { domainsData } from'@/stores/domains';
 import { entitiesData } from'@/stores/entities';
 import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
-import { useDomainsStore } from '@/stores';
-import { useEntitiesStore } from '@/stores';
 
+import {  useLanguageStore, useSessionStore, useAlertStore, useDomainsStore, useEntitiesStore } from '@/stores';
 
-
+const alertStore = useAlertStore();
 const domainStore = useDomainsStore();
-
 const entityStore = useEntitiesStore();
-
 
 function createRandomDomain(): IDomainCreateDTO {
   return {
@@ -36,6 +32,7 @@ function onClickLanguage (e: Event) {
 async function AddInitialData(e: any) {
   e.stopPropagation();
   e.preventDefault();
+  alertStore.success(`Start adding data`);
   for(const domain of domainsData) {
     await domainStore.create(domain);
   }
@@ -43,6 +40,7 @@ async function AddInitialData(e: any) {
     entity.domain_id = domainStore.records[0].id
     await entityStore.create(entity);
   }
+  alertStore.success(`Data is done`);
 }
 
 </script>

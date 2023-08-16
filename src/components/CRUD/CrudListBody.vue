@@ -29,7 +29,10 @@ const props = defineProps<{
              :name="col.name" 
              :label="col.label" 
              :type="col.type" 
+             :foreignKey="col.foreignKey || {}"
              :value="record[col.name]"
+             :col="col"
+             :store="store"
             >
           </CrudListCell>
           
