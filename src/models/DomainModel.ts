@@ -43,10 +43,12 @@ export class DomainModel extends BaseModel implements DomainSchema {
         const total = await idx.db.domains.toCollection().count();
         const offset = (page * size) - size;
         const result = await idx.db.domains
-            // .where({ name: 'Products' })
+            .orderBy('name')
+            //.reverse()
             .offset(offset)
             .limit(size)
-            .sortBy('name');
+            .toArray();
+            
             
         const response = {
             page,

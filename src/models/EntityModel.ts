@@ -46,10 +46,11 @@ export class EntityModel extends BaseModel implements EntitySchema {
         const total = await idx.db.entities.toCollection().count();
         const offset = (page * size) - size;
         const result = await idx.db.entities
-            // .where({ name: 'Products' })
+            .orderBy('name')
+            //.reverse()
             .offset(offset)
             .limit(size)
-            .sortBy('name');
+            .toArray();
             
         const response = {
             page,
