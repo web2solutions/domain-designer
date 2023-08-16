@@ -8,6 +8,7 @@ import type { IQueryRequest } from '@/stores/IQueryRequest';
 
 const props = defineProps<{
   store: any,
+  listpath: string,
 }>()
 
 const route = useRoute();
@@ -23,7 +24,7 @@ function onChangePageSize (size: number) {
     // if (previousFilter) query.filters = previousFilter
     if (previousPage) query.page = previousPage;
     console.log('onChangePageSize', query)
-    router.push({ path: router.currentRoute.value.fullPath, query: query as LocationQueryRaw })
+    router.push({ path: props.listpath, query: query as LocationQueryRaw })
 }
 
 function onChangePageNumber (page: number) {
@@ -38,7 +39,7 @@ function onChangePageNumber (page: number) {
     if (previousSize) query.size = previousSize;
     console.log('onChangePageNumber', query)
     props.store.changePage(page)
-    router.push({ path: router.currentRoute.value.fullPath, query: query as LocationQueryRaw })
+    router.push({ path: props.listpath, query: query as LocationQueryRaw })
 }
 </script>
 <template>

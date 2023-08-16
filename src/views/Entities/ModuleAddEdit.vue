@@ -18,6 +18,8 @@ let isUpdate = false;
 
 const id = route.params.id ? route.params.id.toString() : undefined;
 
+const parentPath = route.matched[0].path;
+
 defineProps<{
   childName: RouteRecordName | null | undefined,
   icon: string,
@@ -61,7 +63,7 @@ onMounted(async () => {
 });
 
 async function goToMainView() {
-  await router.push('/entities/list');
+  await router.push(`${parentPath}/list`);
 }
 
 function validate (event: any) {

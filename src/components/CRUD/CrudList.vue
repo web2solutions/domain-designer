@@ -6,6 +6,7 @@ import { CrudListTable } from './index'
 
 defineProps<{
   store: any,
+  listpath: string,
 }>()
 
 onMounted(() => {
@@ -17,6 +18,6 @@ onMounted(() => {
 <template>
     
       <div class="card-content">
-        <CrudListTable :store="store" />
+        <CrudListTable :store="store" :listpath="listpath" />
       </div>
 </template>

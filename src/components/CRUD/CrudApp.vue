@@ -12,6 +12,7 @@ const props = defineProps<{
     appName: RouteRecordName | null | undefined,
     icon: string,
     store: any,
+    listpath: string,
 }>();
 
 onMounted(async() => {
@@ -62,6 +63,6 @@ onMounted(async() => {
 <template>
     <div class="card has-table">
         <CrudToolbar :appName="appName" :icon="icon" :store="store" />
-        <CrudList :store="store" />
+        <CrudList :store="store" :listpath="listpath" />
     </div>
 </template>
