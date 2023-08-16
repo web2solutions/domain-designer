@@ -33,3 +33,5 @@ https://domain-designer.vercel.app/domains/list
 - Bulma
 - IndexedDB
 - vite
+- Husky
+- Cypress
