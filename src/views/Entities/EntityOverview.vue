@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { useRoute } from 'vue-router';
-import { CrudApp } from '@/components/CRUD/';
+
 import { default as EntityOverviewHeader } from './EntityOverviewHeader.vue'
 import { useEntitiesStore } from '@/stores';
 
@@ -27,5 +27,5 @@ onMounted(async () => {
 
 <template>
     <EntityOverviewHeader :store="domainStore" :appName="childName" :icon="icon" />
-    <CrudApp :store="domainStore" appName="Entities" :icon="icon" />
+    
 </template>
