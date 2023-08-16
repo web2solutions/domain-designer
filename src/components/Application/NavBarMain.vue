@@ -1,8 +1,28 @@
 <script setup lang="ts">
+import { faker } from '@faker-js/faker';
 import { useLanguageStore, useSessionStore, session } from '@/stores';
 const languageStore: any = useLanguageStore();
-const sessionStore: any = useSessionStore()
-// console.log(languageStore.default.application, languageStore.language)
+const sessionStore: any = useSessionStore();
+import { domainsData } from'@/stores/domains';
+import { entitiesData } from'@/stores/entities';
+import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
+import { useDomainsStore } from '@/stores';
+import { useEntitiesStore } from '@/stores';
+
+
+
+const domainStore = useDomainsStore();
+
+const entityStore = useEntitiesStore();
+
+
+function createRandomDomain(): IDomainCreateDTO {
+  return {
+    name: faker.commerce.department(),
+    description: faker.lorem.lines(2),
+  };
+}
+
 
 function onClickLanguage (e: Event) {
   e.stopPropagation();
@@ -11,6 +31,18 @@ function onClickLanguage (e: Event) {
   console.log(target.innerText);
   languageStore.change(target.innerText);
   sessionStore.setLanguage(target.innerText)
+}
+
+async function AddInitialData(e: any) {
+  e.stopPropagation();
+  e.preventDefault();
+  for(const domain of domainsData) {
+    await domainStore.create(domain);
+  }
+  for(const entity of entitiesData as any) {
+    entity.domain_id = domainStore.records[0].id
+    await entityStore.create(entity);
+  }
 }
 
 </script>
@@ -67,6 +99,12 @@ function onClickLanguage (e: Event) {
                 <span class="icon"><i class="mdi mdi-chevron-down"></i></span>
               </a>
               <div class="navbar-dropdown">
+                <a @click="AddInitialData($event)" 
+                  class="navbar-item">
+                  <span class="icon"><i class="mdi mdi-email"></i></span>
+                  <span>{{ languageStore.default.application.AddInitialData }}</span>
+                </a>
+                <hr class="navbar-divider">
                 <router-link to="/profile" class="navbar-item">
                   <span class="icon"><i class="mdi mdi-account"></i></span>
                   <span>{{ languageStore.default.application.MyProfile }}</span>

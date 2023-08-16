@@ -16,7 +16,7 @@ export const useEntitiesStore = defineStore({
                 type: 'string',
             },
             {
-                name: 'domain',
+                name: 'domain_id',
                 label: 'Domain',
                 type: 'string',
             },

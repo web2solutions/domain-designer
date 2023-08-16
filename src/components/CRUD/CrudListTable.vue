@@ -11,6 +11,7 @@ const props = defineProps<{
 }>()
 
 const route = useRoute();
+console.log(router.currentRoute)
 
 function onChangePageSize (size: number) {
     // const id = route.params.id ? route.params.id.toString() : undefined;
@@ -22,7 +23,7 @@ function onChangePageSize (size: number) {
     // if (previousFilter) query.filters = previousFilter
     if (previousPage) query.page = previousPage;
     console.log('onChangePageSize', query)
-    router.push({ path: '/domains/list', query: query as LocationQueryRaw })
+    router.push({ path: router.currentRoute.value.fullPath, query: query as LocationQueryRaw })
 }
 
 function onChangePageNumber (page: number) {
@@ -37,7 +38,7 @@ function onChangePageNumber (page: number) {
     if (previousSize) query.size = previousSize;
     console.log('onChangePageNumber', query)
     props.store.changePage(page)
-    router.push({ path: '/domains/list', query: query as LocationQueryRaw })
+    router.push({ path: router.currentRoute.value.fullPath, query: query as LocationQueryRaw })
 }
 </script>
 <template>

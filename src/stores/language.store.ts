@@ -11,6 +11,7 @@ const enUS: Record<string, any> = {
         Home: 'Home',
         Dashboard: 'Dashboard',
         Applications: 'Applications',
+        AddInitialData: 'Add Demo Data',
     },
     dashboard: {
         Customers: 'Customers',
@@ -30,6 +31,7 @@ const ptBR: Record<string, any> = {
         Home: 'Início',
         Dashboard: 'Dashboard',
         Applications: 'Aplicações',
+        AddInitialData: 'Adicionar Demo Data',
     },
     dashboard: {
         Customers: 'Clientes',
