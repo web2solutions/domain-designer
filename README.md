@@ -9,6 +9,10 @@
 - Generate OpenAPI specs
 - Generate Data Transfer Objects
 - Generate Controllers
+- Generate Services
+- Generate Use Cases
+
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 
 
