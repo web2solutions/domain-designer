@@ -8,7 +8,7 @@
           <div class="level">
             <div class="level-left">
               <div class="level-item">
-                © {{ (new Date()).getUTCFullYear() }}, QuiX Sales
+                © {{ (new Date()).getUTCFullYear() }}, Domain Designer
               </div>
               <div class="level-item">
                  <a href="https://github.com/web2solutions/domain-designer" style="height: 20px">
