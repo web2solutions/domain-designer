@@ -1,3 +1,4 @@
+import { OpenAPIV3 } from "openapi-types";
 
 import { BaseModel } from "@/models/BaseModel";
 import type { IQueryRequest } from "@/stores/IQueryRequest";
@@ -12,12 +13,14 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     public domain_id: string;
     public entity_id: string;
     public description: string;
+    public spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject | null;
     constructor(record: IPropertyCreateDTO){
         super();
         this.name = record.name;
         this.domain_id = record.domain_id;
         this.entity_id = record.domain_id;
         this.description = record.description || '';
+        this.spec = null;
         this.db = idx.db;
     }
 
@@ -26,13 +29,14 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     }
 
     toJSON(): PropertySchema {
-        const { name, description, domain_id, entity_id } = this;
+        const { name, description, domain_id, entity_id, spec } = this;
         const json = {
             id: this.id,
             name,
             domain_id,
             entity_id,
             description,
+            spec,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
         };
