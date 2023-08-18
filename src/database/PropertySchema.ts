@@ -10,6 +10,7 @@ export class PropertySchema {
     name: string;
     spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject | null;
     
+    description: string;
     createdAt: Date;
     updatedAt: Date;
 }
