@@ -1,23 +1,17 @@
 import { defineStore } from 'pinia';
 import Swal from 'sweetalert2';
-import type { IEntityCreateDTO } from '@/models/IEntityCreateDTO';
-import { EntityModel } from '@/models/EntityModel'
+import type { IPropertyCreateDTO } from '@/models/IPropertyCreateDTO';
 import type { IQuery } from './IQuery';
 import { useAlertStore } from '@/stores/alert.store';
-import type { EntitySchema } from '@/database/EntitySchema';
+import type { PropertySchema } from '@/database/PropertySchema';
+import { PropertyModel } from '@/models/PropertyModel'
 import { DomainModel } from '@/models/DomainModel';
-// import type { DomainModel as IDomainModel } from '@/models/DomainModel';
+import { EntityModel } from '@/models/EntityModel';
 import type { IGridColumn } from '@/components/IGridColumn';
 import type { BaseModel } from '.';
-import { PropertySchema } from '../database/PropertySchema';
-import { PropertyModel } from '@/models/PropertyModel';
 
 const gridComuns: IGridColumn[] = [
-    {
-        name: 'name',
-        label: 'Name',
-        type: 'string',
-    },
+    
     {
         name: 'domain_id',
         label: 'Domain',
@@ -26,6 +20,20 @@ const gridComuns: IGridColumn[] = [
             model: DomainModel as unknown as BaseModel,
             labelKey: 'name',
         }
+    },
+    {
+        name: 'entity_id',
+        label: 'Entity',
+        type: 'string',
+        foreignKey: {
+            model: EntityModel as unknown as BaseModel,
+            labelKey: 'name',
+        }
+    },
+    {
+        name: 'name',
+        label: 'Property name',
+        type: 'string',
     },
     {
         name: 'description',
@@ -44,12 +52,12 @@ const gridComuns: IGridColumn[] = [
     },
 ];
 
-export const useEntitiesStore = defineStore({
-    id: 'entities',
+export const usePropertiesStore = defineStore({
+    id: 'properties',
     state: () => ({
         columns: [ ...gridComuns ],
-        records: [ ...[] as EntitySchema[] ],
-        record: { ...{} as EntitySchema },
+        records: [ ...[] as PropertySchema[] ],
+        record: { ...{} as PropertySchema },
         filter: false,
         page: 1,
         pageSize: 10,
@@ -63,7 +71,7 @@ export const useEntitiesStore = defineStore({
     actions: {
         reset (): void {
             this.records = [];
-            this.record = { ...{} as EntitySchema };
+            this.record = { ...{} as PropertySchema };
             this.filter = false;
             this.page = 1;
             this.pageSize = 20;
@@ -84,9 +92,9 @@ export const useEntitiesStore = defineStore({
             }
         },
         
-        async create(record: IEntityCreateDTO): Promise<EntitySchema> {
+        async create(record: IPropertyCreateDTO): Promise<PropertySchema> {
             this.loading = true;
-            const document = new EntityModel(record);
+            const document = new PropertyModel(record);
             await document.save();
             const rawDocument = document.toJSON();
             // console.log(rawDocument);
@@ -95,9 +103,9 @@ export const useEntitiesStore = defineStore({
             return rawDocument;
         },
 
-        async update (id: string, record: IEntityCreateDTO): Promise<EntitySchema> {
+        async update (id: string, record: IPropertyCreateDTO): Promise<PropertySchema> {
             this.loading = true;
-            const document = await EntityModel.update(id, record);
+            const document = await PropertyModel.update(id, record);
             const rawDocument = document;
             // console.log(rawDocument);
             this.records = this.records.map(record =>{
@@ -110,8 +118,8 @@ export const useEntitiesStore = defineStore({
             return rawDocument;
         },
 
-        async getRecord (id: string): Promise<EntitySchema> {
-            const document = await EntityModel.get(id);
+        async getRecord (id: string): Promise<PropertySchema> {
+            const document = await PropertyModel.get(id);
             this.record = { ...document };
             return document
         },
@@ -130,7 +138,7 @@ export const useEntitiesStore = defineStore({
             });
             if (isConfirmed) {
                 // console.log(id)
-                await EntityModel.remove(id);
+                await PropertyModel.remove(id);
                 await this.sync();
                 const alertStore = useAlertStore();
                 alertStore.warning('The document is deleted')
@@ -156,7 +164,7 @@ export const useEntitiesStore = defineStore({
                     size: this.pageSize,
                 };
                 console.log(paging)
-                const { result, total } = await EntityModel.getAll(paging);
+                const { result, total } = await PropertyModel.getAll(paging);
                 this.records = [ ...result ];
                 this.total = total;
                 this.numberOfPages = Math.ceil(this.total / this.pageSize);
@@ -174,14 +182,9 @@ export const useEntitiesStore = defineStore({
             
         },
 
-        async getAll(): Promise<EntitySchema[]> {
-            const documents: EntitySchema[] = await EntityModel.getEntireCollection();
+        async getAll(): Promise<PropertySchema[]> {
+            const documents: PropertySchema[] = await PropertyModel.getEntireCollection();
             return documents;            
-        },
-
-        async getProperties (entityId: string): Promise<PropertySchema[]> {
-            const documents: PropertySchema[] = await PropertyModel.getAllByFilter('entity_id', entityId);
-            return documents;
         },
     }
 });

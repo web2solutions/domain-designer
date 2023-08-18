@@ -9,8 +9,14 @@ const props = defineProps<{
 }>();
 const cellValue = ref(null);
 onMounted(async() => {
-    const document =  await props.col.foreignKey.model.get(props.value);
-    cellValue.value = document[props.col.foreignKey.labelKey];
+    console.log(props.col)
+    console.log(props.value)
+    try {
+      const document =  await props.col.foreignKey.model.get(props.value);
+      cellValue.value = document[props.col.foreignKey.labelKey];
+    } catch (error) {
+      // console.log(error);
+    }
 });
 </script>
 <template>

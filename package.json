@@ -19,6 +19,7 @@
   "dependencies": {
     "bulma": "^0.9.4",
     "dexie": "^3.2.4",
+    "openapi-types": "^12.1.3",
     "pinia": "^2.1.4",
     "sweetalert2": "^11.7.21",
     "uuid": "^9.0.0",

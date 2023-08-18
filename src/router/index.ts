@@ -41,7 +41,7 @@ export const routes = [
           path: 'update/:id',
           name: 'Update Domain',
           component: () => import('@/views/Domains/ModuleAddEdit.vue'),
-          props: { childName: 'Update Domain', icon: 'mdi-ballot' },
+          props: { childName: 'Update Domain', icon: 'mdi-pencil' },
         },
         { 
           path: 'overview/:id',
@@ -49,12 +49,18 @@ export const routes = [
           component: () => import('@/views/Domains/DomainOverview.vue'),
           props: { childName: 'Domain Overview', icon: 'mdi-ballot' },
         },
+        { 
+          path: 'entity/:id/properties/list',
+          name: 'Edit Entity properties',
+          component: () => import('@/views/Entities/EntityOverview.vue'),
+          props: { childName: 'Edit Entity properties', icon: 'mdi-pencil' },
+        },
         // 
     ]
   },
   {
     path: '/entities',
-    props: { moduleName: 'Entities', icon: 'mdi-pencil-ruler' },
+    props: { moduleName: 'Entities', icon: 'mdi-alpha-e-box' },
     name: 'Entities',
     component: () => import('@/views/Entities/ModuleDrawer.vue'),
     children: [
@@ -74,15 +80,46 @@ export const routes = [
           path: 'update/:id',
           name: 'Update Entity',
           component: () => import('@/views/Entities/ModuleAddEdit.vue'),
-          props: { childName: 'Update Entity', icon: 'mdi-ballot' },
+          props: { childName: 'Update Entity', icon: 'mdi-pencil' },
         },
         { 
           path: 'overview/:id',
           name: 'Entity Overview',
           component: () => import('@/views/Entities/EntityOverview.vue'),
           props: { childName: 'Entity Overview', icon: 'mdi-ballot' },
+        }
+    ]
+  },
+  {
+    path: '/properties',
+    props: { moduleName: 'Properties', icon: 'mdi-alpha-e-box' },
+    name: 'Properties',
+    component: () => import('@/views/Properties/ModuleDrawer.vue'),
+    children: [
+        { 
+          path: 'list',
+          name: 'List Properties',
+          component: () => import('@/views/Properties/ModuleList.vue'),
+          props: { childName: 'List Properties', icon: 'mdi-table' },
         },
-        // 
+        { 
+          path: 'create',
+          name: 'New Property',
+          component: () => import('@/views/Properties/ModuleAddEdit.vue'),
+          props: { childName: 'New Property', icon: 'mdi-ballot' },
+        }, 
+        { 
+          path: 'update/:id',
+          name: 'Update Property',
+          component: () => import('@/views/Properties/ModuleAddEdit.vue'),
+          props: { childName: 'Update Property', icon: 'mdi-pencil' },
+        },
+        { 
+          path: 'overview/:id',
+          name: 'Property Overview',
+          component: () => import('@/views/Properties/PropertyOverview.vue'),
+          props: { childName: 'Entity Overview', icon: 'mdi-ballot' },
+        }
     ]
   },
   {

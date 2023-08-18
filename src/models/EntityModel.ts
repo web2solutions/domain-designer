@@ -23,7 +23,7 @@ export class EntityModel extends BaseModel implements EntitySchema {
         return this.db.entities.add(this.toJSON());
     }
 
-    toJSON() {
+    toJSON(): EntitySchema {
         const { name, description, domain_id } = this;
         const json = {
             id: this.id,
@@ -34,10 +34,6 @@ export class EntityModel extends BaseModel implements EntitySchema {
             updatedAt: this.updatedAt,
         };
         return json
-    }
-
-    log () {
-        console.log(this);
     }
 
     static async getAll(query: IQueryRequest): Promise<IPagingResponse<EntitySchema>> {
@@ -62,15 +58,26 @@ export class EntityModel extends BaseModel implements EntitySchema {
         return response;
     }
 
-    static async remove(id: string) {
+    static async remove(id: string) : Promise<Boolean> {
         return await idx.db.entities.delete(id);
     }
 
-    static async get(id: string) {
+    static async getEntireCollection(): Promise<EntitySchema[]> {
+        const result = await idx.db.entities
+            .orderBy('name')
+            .toArray();
+        return result;
+    }
+
+    static async get(id: string) : Promise<EntitySchema> {
         return await idx.db.entities.get(id);
     }
 
-    static async update(id: string, data: IEntityCreateDTO) {
+    static async getAllByFilter(indexName: string, value: string): Promise<EntitySchema[]> {
+        return await idx.db.entities.where(indexName).equals(value).sortBy('name');
+    }
+
+    static async update(id: string, data: IEntityCreateDTO): Promise<EntitySchema> {
         await idx.db.entities.update(id, data);
         const document = await idx.db.entities.get(id);
         return document;

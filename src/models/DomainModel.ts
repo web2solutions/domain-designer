@@ -21,7 +21,7 @@ export class DomainModel extends BaseModel implements DomainSchema {
         return this.db.domains.add(this.toJSON());
     }
 
-    toJSON() {
+    toJSON(): DomainSchema {
         const { name, description } = this;
         const json = {
             id: this.id,
@@ -31,10 +31,6 @@ export class DomainModel extends BaseModel implements DomainSchema {
             updatedAt: this.updatedAt,
         };
         return json
-    }
-
-    log () {
-        console.log(this);
     }
 
     static async getAll(query: IQueryRequest): Promise<IPagingResponse<DomainSchema>> {
@@ -60,15 +56,22 @@ export class DomainModel extends BaseModel implements DomainSchema {
         return response;
     }
 
-    static async remove(id: string) {
+    static async getEntireCollection(): Promise<DomainSchema[]> {
+        const result = await idx.db.domains
+            .orderBy('name')
+            .toArray();
+        return result;
+    }
+
+    static async remove(id: string): Promise<boolean> {
         return await idx.db.domains.delete(id);
     }
 
-    static async get(id: string) {
+    static async get(id: string): Promise<DomainSchema> {
         return await idx.db.domains.get(id);
     }
 
-    static async update(id: string, data: IDomainCreateDTO) {
+    static async update(id: string, data: IDomainCreateDTO): Promise<DomainSchema> {
         await idx.db.domains.update(id, data);
         const document = await idx.db.domains.get(id);
         return document;

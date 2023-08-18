@@ -1,10 +1,14 @@
 import { defineStore } from 'pinia';
 import Swal from 'sweetalert2';
 import type { IDomainCreateDTO } from '@/models/IDomainCreateDTO';
-import { DomainModel } from '@/models/DomainModel'
+import { DomainModel } from '@/models/DomainModel';
+import { EntityModel } from '@/models/EntityModel';
 import type { IQuery } from './IQuery';
 import { useAlertStore } from '@/stores/alert.store';
 import type { DomainSchema } from '@/database/DomainSchema';
+import type { EntitySchema } from '@/database/EntitySchema';
+import { PropertyModel } from '@/models/PropertyModel';
+import { PropertySchema } from '../database/PropertySchema';
 
 export const useDomainsStore = defineStore({
     id: 'domains',
@@ -32,7 +36,7 @@ export const useDomainsStore = defineStore({
             },
         ],
         records: [ ...[] as DomainSchema[]],
-        record: {},
+        record: { ...{} as DomainSchema },
         filter: false,
         page: 1,
         pageSize: 10,
@@ -44,9 +48,9 @@ export const useDomainsStore = defineStore({
         loading: false,
     }),
     actions: {
-        reset () {
+        reset (): void {
             this.records = [];
-            this.record = {};
+            this.record = { ...{} as DomainSchema };
             this.filter = false;
             this.page = 1;
             this.pageSize = 20;
@@ -57,7 +61,7 @@ export const useDomainsStore = defineStore({
             this.pages = [];
             this.loading = false;
         },
-        setPaging(query: IQuery) {
+        setPaging(query: IQuery): void {
             const { page, size } = query;
             if (page) {
                 this.page = page;
@@ -67,7 +71,7 @@ export const useDomainsStore = defineStore({
             }
         },
         
-        async create(record: IDomainCreateDTO) {
+        async create(record: IDomainCreateDTO): Promise<DomainSchema> {
             this.loading = true;
             const document = new DomainModel(record);
             await document.save();
@@ -78,7 +82,7 @@ export const useDomainsStore = defineStore({
             return rawDocument;
         },
 
-        async update (id: string, record: IDomainCreateDTO) {
+        async update (id: string, record: IDomainCreateDTO): Promise<DomainSchema> {
             this.loading = true;
             const document = await DomainModel.update(id, record);
             const rawDocument = document;
@@ -93,13 +97,13 @@ export const useDomainsStore = defineStore({
             return rawDocument;
         },
 
-        async getRecord (id: string) {
+        async getRecord (id: string): Promise<DomainSchema> {
             const document = await DomainModel.get(id);
             this.record = { ...document };
             return document
         },
 
-        async remove (id: string) {
+        async remove (id: string): Promise<void> {
             this.loading = true
             const { isConfirmed } = await Swal.fire({
                 title: 'Delete domain',
@@ -123,15 +127,15 @@ export const useDomainsStore = defineStore({
             }
         },
 
-        async changePage(page: number) {
+        changePage(page: number): void {
             this.page = page;
         },
 
-        async changePageSize(size: number) {
+        changePageSize(size: number): void {
             this.pageSize = size;
         },
 
-        async sync() {
+        async sync(): Promise<void> {
             try {
                 this.loading = true;
                 const paging = {
@@ -155,6 +159,21 @@ export const useDomainsStore = defineStore({
                 this.loading = false;
             } 
             
-        }
+        },
+
+        async getAll(): Promise<DomainSchema[]> {
+            const documents: DomainSchema[] = await DomainModel.getEntireCollection();
+            return documents;            
+        },
+
+        async getEntities (domainId: string): Promise<EntitySchema[]> {
+            const documents: EntitySchema[] = await EntityModel.getAllByFilter('domain_id', domainId);
+            return documents;
+        },
+
+        async getProperties (domainId: string): Promise<PropertySchema[]> {
+            const documents = await PropertyModel.getAllByFilter('domain_id', domainId);
+            return documents;
+        },
     }
 });

@@ -11,9 +11,7 @@ const props = defineProps<{
   store: any,
 }>()
 
-function getRecord(value: any){
-  return Promise.resolve(props.store.getRecord(value));
-}
+
 </script>
 <template>
     <template v-if="type === 'date'">
@@ -38,7 +36,7 @@ function getRecord(value: any){
             :label="label" 
             :type="type" 
             :value="value" 
-            :col="col" 
+            :col="col"
           />
         </template>
         <template v-else>

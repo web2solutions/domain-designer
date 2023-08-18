@@ -46,16 +46,14 @@ function onChangePageNumber (page: number) {
     <div class="b-table has-pagination">
         <div class="table-wrapper has-mobile-cards">
           <template v-if="store.records.length === 0">
-            <div class="notification is-light">
-              <div class="level">
-                <div class="level-left">
-                  <div class="level-item">
-                    <div>
-                      <b>No records ...</b>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="block">
+              <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                  <p>
+                    <span class="icon is-large"><i class="mdi mdi-emoticon-sad mdi-48px"></i></span>
+                  </p>
+                  <p>Nothing's here…</p></div>
+              </section>
             </div>
           </template>
           <template v-else>
