@@ -7,3 +7,4 @@ export * from './session.store';
 export * from './session';
 export * from '../models/BaseModel';
 export * from '../database/IDX';
+export * from './domain.overview.store'
