@@ -23,6 +23,7 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   "globals": {
-    "Chart": true
+    "Chart": true,
+    "joint": true,
   }
 }

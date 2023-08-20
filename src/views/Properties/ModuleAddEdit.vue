@@ -19,7 +19,6 @@ const input_name = ref(null);
 const input_name_invalid = ref(false);
 const input_description = ref(null);
 const input_description_invalid = ref(false);
-
 const input_domain_id = ref(null);
 const input_domain_id_invalid = ref(true);
 
@@ -37,42 +36,6 @@ const emptyDomains: DomainSchema[] = [];
 const domains = ref(emptyDomains);
 const emptyEntities: EntitySchema[] = [];
 const entities = ref(emptyEntities);
-
-const selectedDataType = ref('')
-
-const selectedFormats = ref([])
-
-const OASDataTypes = [
-  'string',
-  'number',
-  'integer',
-  'boolean',
-  'array',
-  'object',
-];
-
-const OASFormats = {
-  number: [
-    '-',
-    'float',
-    'double',
-  ],
-  integer: [
-    '-',
-    'int32',
-    'int64',
-  ],
-  string: [
-    '-',
-    'date',
-    'date-time',
-    'password',
-    'byte',
-    'binary',
-    'email',
-    'uuid',
-  ]
-}
 
 
 defineProps<{
@@ -132,13 +95,7 @@ onMounted(async () => {
   isUpdate = false;
 });
 
-function selectDataTypes (event: Event) {
-  const type = (event.target as HTMLSelectElement).value;
-  console.log(type);
-  selectedDataType.value = type
 
-  selectedFormats.value = OASFormats[type];
-}
 
 async function goToMainView() {
   await router.push(entityStore.goTo);
@@ -414,198 +371,7 @@ function reset() {
             <!-- end input -->
           </div>
         </div>
-        <div class="columns">
-          <div class="column">
-            <!-- start input -->
-            <div class="field is-horizontal">
-              <div class="field-label is-small">
-                <label class="label" for="input_type">Type</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <div class="select is-fullwidth">
-                      <select
-                        :class="'select is-small ' + (input_domain_id_invalid ? 'is-danger' : '')"
-                        name="input_type" 
-                        id="input_type" 
-                        ref="input_type"
-                        @change="selectDataTypes($event)"
-                        @blur="selectDataTypes($event)"
-                      >
-                        <option value="">please select one data type</option>
-                        <option v-for="type in OASDataTypes" :key="type" :value="type">{{ type }}</option>
-                      </select>
-                    </div>
-                    <p v-if="input_domain_id_invalid" class="help is-danger">
-                      This field is required
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end input -->
-          </div>
-          <div class="column">
-            <!-- start input -->
-            <div class="field is-horizontal" v-if="selectedDataType === 'string' || selectedDataType === 'number' || selectedDataType === 'integer'">
-              <div class="field-label is-small">
-                <label class="label" for="input_format">Format</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <div class="select is-fullwidth">
-                      <select
-                        class="select is-small"
-                        name="input_format" 
-                        id="input_format" 
-                        ref="input_format"
-                      >
-                        <option v-for="format in selectedFormats" :key="format" :value="format">{{ format }}</option>
-                      </select>
-                    </div>
-    
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end input -->
-          </div>
-          <div class="column" v-if="selectedDataType !== ''">
-            <label class="checkbox field-label is-small" >
-              <input 
-                type="checkbox"
-                name="input_nullable" 
-                ref="input_nullable"
-              >
-              It is Nullable
-            </label>
-          </div>
-          <div class="column" v-if="selectedDataType === 'string'">
-            <!-- start input is-small -->
-            <div class="field is-horizontal">
-              <div class="field-label is-small">
-                <label class="label" for="input_pattern">Pattern</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input 
-                      class="input is-small" 
-                      name="input_pattern" 
-                      id="input_pattern" 
-                      ref="input_pattern" 
-                      type="text" 
-                      placeholder="Type a pattern for this property"
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end input is-small -->
-          </div>
-        </div>
-        <div class="columns" v-if="selectedDataType !== ''">
-          <div class="column" v-if="selectedDataType === 'string'">
-            enum
-          </div>
-          <div class="column" v-if="selectedDataType === 'object'">
-            required
-          </div>
-        </div>
-        <div class="columns" v-if="selectedDataType !== ''">
-          <div class="column">
-            <!-- start input is-small -->
-            <div class="field is-horizontal">
-              <div class="field-label is-small">
-                <label class="label" for="input_example">Example value</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input 
-                      type="text" 
-                      class="input is-small"
-                      name="input_example"
-                      id="input_example" 
-                      ref="input_example" 
-                      placeholder="Type a example value for this property"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end input -->
-          </div>
-          <div class="column">
-            <!-- start input is-small -->
-            <div class="field is-horizontal">
-              <div class="field-label is-small">
-                <label class="label" for="input_default">Default value</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input 
-                      type="text" 
-                      class="input is-small"
-                      name="input_default"
-                      id="input_default" 
-                      ref="input_default" 
-                      placeholder="Type a default value for this property"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end input -->
-          </div>
-        </div>
-        <div class="columns" v-if="selectedDataType !== ''">
-          <div class="column">
-            readOnly
-          </div>
-          <div class="column">
-            writeOnly
-          </div>
-        </div>
-        <div class="columns" v-if="selectedDataType === 'number' || selectedDataType === 'integer'">
-          <div class="column">
-            minimum
-          </div>
-          <div class="column">
-            maximum
-          </div>
-          <div class="column">
-            exclusiveMinimum
-          </div>
-          <div class="column">
-            exclusiveMaximum
-          </div>
-          <div class="column">
-            multipleOf
-          </div>
-        </div>
-        <div class="columns" v-if="selectedDataType === 'string'">
-          <div class="column">
-            minLength
-          </div>
-          <div class="column">
-            maxLength
-          </div>
-        </div>
-        <div class="columns" v-if="selectedDataType === 'array'">
-          <div class="column">
-            minItems
-          </div>
-          <div class="column">
-            maxItems
-          </div>
-          <div class="column">
-            uniqueItems
-          </div>
-        </div>
+        
         
 
         <!-- start input -->

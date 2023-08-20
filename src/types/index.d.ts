@@ -2,6 +2,7 @@
 
 declare global {
     var Chart: any;
+    var joint: any;
 }
   
 export {};

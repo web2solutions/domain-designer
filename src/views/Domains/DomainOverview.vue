@@ -1,5 +1,4 @@
 <script setup lang="ts">
-/*global $*/
 import { onMounted, ref, onUnmounted } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { useRoute } from 'vue-router';
@@ -71,7 +70,7 @@ async function buildGraph() {
     
     new joint.dia.Paper({
         el: document.getElementById('paper'),
-        width: window.getComputedStyle(document.getElementById('paper')?.parentElement as HTMLElement).getPropertyValue("width") - 30,
+        width: +((window.getComputedStyle(document.getElementById('paper')?.parentElement as HTMLElement).getPropertyValue("width") as string).replace(/px/, '')) - 30,
         height: wrapperHeight,
         gridSize: 1,
         model: graph
