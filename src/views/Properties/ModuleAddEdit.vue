@@ -38,6 +38,43 @@ const domains = ref(emptyDomains);
 const emptyEntities: EntitySchema[] = [];
 const entities = ref(emptyEntities);
 
+const selectedDataType = ref('')
+
+const selectedFormats = ref([])
+
+const OASDataTypes = [
+  'string',
+  'number',
+  'integer',
+  'boolean',
+  'array',
+  'object',
+];
+
+const OASFormats = {
+  number: [
+    '-',
+    'float',
+    'double',
+  ],
+  integer: [
+    '-',
+    'int32',
+    'int64',
+  ],
+  string: [
+    '-',
+    'date',
+    'date-time',
+    'password',
+    'byte',
+    'binary',
+    'email',
+    'uuid',
+  ]
+}
+
+
 defineProps<{
   childName: RouteRecordName | null | undefined,
   icon: string,
@@ -55,11 +92,17 @@ watch(
 
 onMounted(async () => {
   if(input_name.value) {
-    (input_name.value as HTMLInputElement).focus();
+    // (input_name.value as HTMLInputElement).focus();
+  }
+
+  if(entityStore.goTo === '') {
+    entityStore.goTo = `${route.matched[0].path}/list`;
   }
 
   domains.value = await domainStore.getAll();
   entities.value = await entityStore.getAll();
+
+
   
   if (id) {
     const record = await propertyStore.getRecord(id as string);
@@ -89,8 +132,16 @@ onMounted(async () => {
   isUpdate = false;
 });
 
+function selectDataTypes (event: Event) {
+  const type = (event.target as HTMLSelectElement).value;
+  console.log(type);
+  selectedDataType.value = type
+
+  selectedFormats.value = OASFormats[type];
+}
+
 async function goToMainView() {
-  await router.push(`${parentPath}/list`);
+  await router.push(entityStore.goTo);
 }
 
 
@@ -243,25 +294,27 @@ function reset() {
       </p>
     </header>
     <div class="card-content">
-      <form method="get">
+      <form method="get"><div class="columns">
+        <div class="column">
         <!-- start input -->
         <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">Domain</label>
+          <div class="field-label is-small">
+            <label class="label" for="input_domain_id">Domain</label>
           </div>
           <div class="field-body">
-            <div class="field is-narrow">
+            <div class="field">
               <div class="control">
                 <div class="select is-fullwidth">
                   <select
-                    :class="'input ' + (input_domain_id_invalid ? 'is-danger' : '')"
+                    :class="'select is-small ' + (input_domain_id_invalid ? 'is-danger' : '')"
                     name="input_domain_id" 
                     ref="input_domain_id"
+                    id="input_domain_id"
                     @change="changeDomain()"
                     @blur="changeDomain()"
                   >
                     <option value="">please select one domain</option>
-                    <option v-for="document in domains" :key="document.id" :value="document.id" :selected=" document.id === id ? true : false">{{ document.name }} - {{document.description}}</option>
+                    <option v-for="document in domains" :key="document.id" :value="document.id" :selected=" document.id === id ? true : document.id === route.query?.onDomain ? true : false">{{ document.name }}</option>
                   </select>
                 </div>
                 <p v-if="input_domain_id_invalid" class="help is-danger">
@@ -271,25 +324,28 @@ function reset() {
             </div>
           </div>
         </div>
-        <!-- end input -->
-        <!-- start input -->
+        <!-- end input is-small -->
+        </div>
+        <div class="column">
+          <!-- start input is-small -->
         <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">Entity</label>
+          <div class="field-label is-small">
+            <label class="label" for="input_entity_id">Entity</label>
           </div>
           <div class="field-body">
-            <div class="field is-narrow">
+            <div class="field">
               <div class="control">
                 <div class="select is-fullwidth">
                   <select
-                    :class="'input ' + (input_entity_id_invalid ? 'is-danger' : '')"
+                    :class="'select is-small ' + (input_entity_id_invalid ? 'is-danger' : '')"
                     name="input_entity_id" 
                     ref="input_entity_id"
+                    id="input_entity_id"
                     @change="validate()"
                     @blur="validate()"
                   >
                     <option value="">please select one entity</option>
-                    <option v-for="document in entities" :key="document.id" :value="document.id" :selected=" document.id === propertyStore.record.id ? true : false">{{ document.name }} - {{document.description}}</option>
+                    <option v-for="document in entities" :key="document.id" :value="document.id" :selected=" document.id === propertyStore.record.id ? true : document.id === route.query?.onEntity ? true : false">{{ document.name }} - {{document.description}}</option>
                   </select>
                 </div>
                 <p v-if="input_entity_id_invalid" class="help is-danger">
@@ -299,56 +355,286 @@ function reset() {
             </div>
           </div>
         </div>
-        <!-- end input -->
+        <!-- end input is-small -->
+        </div>
+      </div>
+        
+        
         <hr />
-        <!-- start input -->
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">Property name</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <input 
-                  :class="'input ' + (input_name_invalid ? 'is-danger' : '')" 
-                  name="input_name" 
-                  ref="input_name" 
-                  type="text" 
-                  placeholder="Type a name for this property"
-                  @change="validate()"
-                  @blur="validate()"
-                >
+        <div class="columns">
+          <div class="column">
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_name">Property name</label>
               </div>
-              <p v-if="input_name_invalid" class="help is-danger">
-                This field is required
-              </p>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      :class="'input is-small ' + (input_name_invalid ? 'is-danger' : '')" 
+                      name="input_name" 
+                      ref="input_name" 
+                      id="input_name" 
+                      type="text" 
+                      placeholder="Type a name for this property"
+                      @change="validate()"
+                      @blur="validate()"
+                    >
+                  </div>
+                  <p v-if="input_name_invalid" class="help is-danger">
+                    This field is required
+                  </p>
+                </div>
+              </div>
             </div>
+            <!-- end input is-small -->
+          </div>
+          <div class="column">
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_description">Description</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      type="text" 
+                      :class="'input is-small ' + (input_description_invalid ? 'is-danger' : '')"
+                      name="input_description"
+                      id="input_description" 
+                      ref="input_description" 
+                      placeholder="Type a description for this property"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
           </div>
         </div>
+        <div class="columns">
+          <div class="column">
+            <!-- start input -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_type">Type</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select
+                        :class="'select is-small ' + (input_domain_id_invalid ? 'is-danger' : '')"
+                        name="input_type" 
+                        id="input_type" 
+                        ref="input_type"
+                        @change="selectDataTypes($event)"
+                        @blur="selectDataTypes($event)"
+                      >
+                        <option value="">please select one data type</option>
+                        <option v-for="type in OASDataTypes" :key="type" :value="type">{{ type }}</option>
+                      </select>
+                    </div>
+                    <p v-if="input_domain_id_invalid" class="help is-danger">
+                      This field is required
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+          <div class="column">
+            <!-- start input -->
+            <div class="field is-horizontal" v-if="selectedDataType === 'string' || selectedDataType === 'number' || selectedDataType === 'integer'">
+              <div class="field-label is-small">
+                <label class="label" for="input_format">Format</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select
+                        class="select is-small"
+                        name="input_format" 
+                        id="input_format" 
+                        ref="input_format"
+                      >
+                        <option v-for="format in selectedFormats" :key="format" :value="format">{{ format }}</option>
+                      </select>
+                    </div>
+    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+          <div class="column" v-if="selectedDataType !== ''">
+            <label class="checkbox field-label is-small" >
+              <input 
+                type="checkbox"
+                name="input_nullable" 
+                ref="input_nullable"
+              >
+              It is Nullable
+            </label>
+          </div>
+          <div class="column" v-if="selectedDataType === 'string'">
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_pattern">Pattern</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      class="input is-small" 
+                      name="input_pattern" 
+                      id="input_pattern" 
+                      ref="input_pattern" 
+                      type="text" 
+                      placeholder="Type a pattern for this property"
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input is-small -->
+          </div>
+        </div>
+        <div class="columns" v-if="selectedDataType !== ''">
+          <div class="column" v-if="selectedDataType === 'string'">
+            enum
+          </div>
+          <div class="column" v-if="selectedDataType === 'object'">
+            required
+          </div>
+        </div>
+        <div class="columns" v-if="selectedDataType !== ''">
+          <div class="column">
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_example">Example value</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      type="text" 
+                      class="input is-small"
+                      name="input_example"
+                      id="input_example" 
+                      ref="input_example" 
+                      placeholder="Type a example value for this property"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+          <div class="column">
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_default">Default value</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      type="text" 
+                      class="input is-small"
+                      name="input_default"
+                      id="input_default" 
+                      ref="input_default" 
+                      placeholder="Type a default value for this property"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+        </div>
+        <div class="columns" v-if="selectedDataType !== ''">
+          <div class="column">
+            readOnly
+          </div>
+          <div class="column">
+            writeOnly
+          </div>
+        </div>
+        <div class="columns" v-if="selectedDataType === 'number' || selectedDataType === 'integer'">
+          <div class="column">
+            minimum
+          </div>
+          <div class="column">
+            maximum
+          </div>
+          <div class="column">
+            exclusiveMinimum
+          </div>
+          <div class="column">
+            exclusiveMaximum
+          </div>
+          <div class="column">
+            multipleOf
+          </div>
+        </div>
+        <div class="columns" v-if="selectedDataType === 'string'">
+          <div class="column">
+            minLength
+          </div>
+          <div class="column">
+            maxLength
+          </div>
+        </div>
+        <div class="columns" v-if="selectedDataType === 'array'">
+          <div class="column">
+            minItems
+          </div>
+          <div class="column">
+            maxItems
+          </div>
+          <div class="column">
+            uniqueItems
+          </div>
+        </div>
+        
+
+        <!-- start input -->
+        <!-- <div class="field is-horizontal">
+          <div class="field-label is-small">
+            <label class="label">Entity</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-narrow">
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select
+                    name="input_type" 
+                    ref="input_type"
+                  >
+                    <option value="">please select one type</option>
+                    <option v-for="type in OASDataTypes" :key="type" :value="type">{{ type }}</option>
+                  </select>
+                </div>
+                <p v-if="input_entity_id_invalid" class="help is-danger">
+                  This field is required
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> -->
         <!-- end input -->
-        <!-- start input -->
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">Description</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <textarea 
-                  :class="'textarea ' + (input_description_invalid ? 'is-danger' : '')"
-                  name="input_description" 
-                  ref="input_description" 
-                  placeholder="Type a description for this property"
-                  @change="validate()"
-                  @blur="validate()"
-                ></textarea>
-              </div>
-              <p v-if="input_description_invalid" class="help is-danger">
-                This field is required
-              </p>
-            </div>
-          </div>
-        </div>
+
+        
         <hr>
         <div class="field is-horizontal">
           <div class="field-label">

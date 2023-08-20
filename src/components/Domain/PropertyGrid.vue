@@ -9,8 +9,6 @@ const props = defineProps<{
   columns: any[],
   actions: any[],
   store: any,
-  toolbarActions: any,
-  hideHeader: boolean,
 }>()
 
 
@@ -19,32 +17,11 @@ onMounted(() => {
 });
 
 function selectMainId(id: string) {
-  props.store.setSelectedDataEntity(id);
+  props.store.setSelectedProperty(id);
 }
 </script>
 <template>
     <div class="card has-table">
-        <header class="card-header" v-if="!!!hideHeader">
-          <p class="card-header-title">
-            <span class="icon"><i :class="'mdi ' + icon"></i></span>
-            {{ title }}
-          </p>
-          <p class="card-header-icon">
-            <button
-              type="button"
-              class="button"
-              @click="action.handler()"
-              v-for="action in toolbarActions" :key="action.name"
-            >
-              <span class="icon">
-                <i 
-                  :class="'mdi ' + action.icon"
-                >
-              </i>
-            </span>
-            </button>
-          </p>
-        </header>
         <div class="card-content" v-if="data.length === 0" >
             <section class="section">
               <div class="content has-text-grey has-text-centered">
@@ -82,7 +59,7 @@ function selectMainId(id: string) {
                   v-for="record in data" 
                   :key="record.id"
                   @click="selectMainId(record.id)"
-                  :class="'clickable' + (record.id === props.store.selectedDataEntity ? ' is-selected' : '')"
+                  :class="'clickable' + (record.id === props.store.selectedProperty ? ' is-selected' : '')"
                 >
                     <td class="is-image-cell">
                         <div class="image">

@@ -142,7 +142,7 @@ export const useDomainsStore = defineStore({
                     page: this.page,
                     size: this.pageSize,
                 };
-                console.log(paging)
+                // console.log(paging)
                 const { result, total } = await DomainModel.getAll(paging);
                 this.records = [ ...result ];
                 this.total = total;

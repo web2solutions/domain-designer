@@ -15,7 +15,7 @@ import { PropertyModel } from '@/models/PropertyModel';
 const gridComuns: IGridColumn[] = [
     {
         name: 'name',
-        label: 'Name',
+        label: 'Entity Name',
         type: 'string',
     },
     {
@@ -59,6 +59,7 @@ export const useEntitiesStore = defineStore({
         pageTotalRecords: [1],
         pages: [],
         loading: false,
+        goTo: '',
     }),
     actions: {
         reset (): void {

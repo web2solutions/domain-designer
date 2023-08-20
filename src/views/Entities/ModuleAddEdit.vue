@@ -25,7 +25,12 @@ let isUpdate = false;
 
 const id = route.params.id ? route.params.id.toString() : undefined;
 
-const parentPath = route.matched[0].path;
+console.log(Object.keys(route))
+console.log(route.redirectedFrom)
+console.log(router.currentRoute)
+
+
+// const parentPath = ;
 
 const emptydomains: DomainSchema[] = [];
 const domains = ref(emptydomains)
@@ -47,9 +52,13 @@ watch(
 
 onMounted(async () => {
   if(input_name.value) {
-    (input_name.value as HTMLInputElement).focus();
+    // (input_name.value as HTMLInputElement).focus();
   }
 
+  if(entityStore.goTo === '') {
+    entityStore.goTo = `${route.matched[0].path}/list`;
+  }
+  
   domains.value = await domainstore.getAll();
   
   if (id) {
@@ -78,7 +87,7 @@ onMounted(async () => {
 });
 
 async function goToMainView() {
-  await router.push(`${parentPath}/list`);
+  await router.push(entityStore.goTo);
 }
 
 function validate (event: any) {
@@ -241,7 +250,7 @@ function reset() {
                     @blur="validate($event)"
                   >
                     <option value="">please select one domain</option>
-                    <option v-for="document in domains" :key="document.id" :value="document.id" :selected=" document.id === id ? true : false">{{ document.name }} - {{document.description}}</option>
+                    <option v-for="document in domains" :key="document.id" :value="document.id" :selected=" document.id === id ? true : document.id === route.query?.onDomain ? true : false">{{ document.name }} - {{document.description}}</option>
                   </select>
                 </div>
                 <p v-if="input_domain_id_invalid" class="help is-danger">

@@ -5,7 +5,6 @@ import type { RouteRecordName } from 'vue-router';
 import { CrudList, CrudToolbar } from '@/components/CRUD/';
 import type { IPagingRequest } from '@/stores/IPagingRequest';
 
-
 const route = useRoute();
 
 const props = defineProps<{
@@ -56,7 +55,7 @@ onMounted(async() => {
         props.store.changePageSize(+size);
     }
     await props.store.sync();
-    console.log(route.query)
+    // console.log(route.query)
 });
 
 </script>

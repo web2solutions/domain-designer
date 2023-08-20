@@ -52,7 +52,7 @@ export class DomainModel extends BaseModel implements DomainSchema {
             total,
             result,
         };
-        console.log(response)
+        // console.log(response)
         return response;
     }
 

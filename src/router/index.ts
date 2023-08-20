@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw }  from 'vue-router';
 import DashboardView from '../views/DashboardView.vue'
+import { useEntitiesStore } from '@/stores';
 // import DomainsView from '../views/DomainsView.vue'
 
 export const routes = [
@@ -262,6 +263,25 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: 'is-active router-link-active',
   routes: routes as RouteRecordRaw[],
-})
+});
+
+
+router.beforeEach(async (to, from) => {
+  const entityStore = useEntitiesStore();
+  console.log(to.path);
+  if(to.path === '/entities/create' ) {
+      console.log(from.path)
+      if(from.path.toString().indexOf('domains/overview')) {
+        // back to verview
+        entityStore.goTo = from.path;
+      }
+  } else if(to.path === '/properties/create' ) {
+    console.log(from.path)
+    if(from.path.toString().indexOf('domains/overview')) {
+      // back to verview
+      entityStore.goTo = from.path;
+    }
+}
+});
 
 export default router

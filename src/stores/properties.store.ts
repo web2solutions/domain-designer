@@ -67,6 +67,7 @@ export const usePropertiesStore = defineStore({
         pageTotalRecords: [1],
         pages: [],
         loading: false,
+        gotTo: '',
     }),
     actions: {
         reset (): void {
