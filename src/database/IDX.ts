@@ -6,7 +6,7 @@ import { PropertySchema } from '@/database/PropertySchema';
 const stores = {
 	domains: 'id,&name,description,createdAt,updatedAt',
     entities: 'id,domain_id,&name,description,createdAt,updatedAt',
-    properties: 'id,domain_id,entity_id,&name,description,createdAt,updatedAt',
+    properties: 'id,domain_id,entity_id,name,description,createdAt,updatedAt',
 }
 
 
