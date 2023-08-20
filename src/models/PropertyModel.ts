@@ -18,7 +18,7 @@ export class PropertyModel extends BaseModel implements PropertySchema {
         super();
         this.name = record.name;
         this.domain_id = record.domain_id;
-        this.entity_id = record.domain_id;
+        this.entity_id = record.entity_id;
         this.description = record.description || '';
         this.spec = null;
         this.db = idx.db;
