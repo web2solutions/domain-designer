@@ -82,7 +82,7 @@ function selectMainId(id: string) {
                   v-for="record in data" 
                   :key="record.id"
                   @click="selectMainId(record.id)"
-                  :class="'clickable' + (record.id === props.store.selectedDataEntity ? ' is-selected' : '')"
+                  :class="'clickable' + (record.id === props.store.selectedDataEntity.id ? ' is-selected' : '')"
                 >
                     <td class="is-image-cell">
                         <div class="image">

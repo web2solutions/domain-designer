@@ -17,8 +17,10 @@ export class DomainModel extends BaseModel implements DomainSchema {
         this.db = idx.db;
     }
 
-    save() {
-        return this.db.domains.add(this.toJSON());
+    async save() {
+        const rawDoc = this.toJSON()
+        const id = await this.db.domains.add(rawDoc)
+        return { ...rawDoc, id };
     }
 
     toJSON(): DomainSchema {

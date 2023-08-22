@@ -8,29 +8,42 @@ import { default as PropertyForm } from './PropertyForm.vue'
 import { /* useDomainsStore, useEntitiesStore,*/ useDomainOverviewStore, usePropertiesStore } from '@/stores';
 import type { IGridColumn } from '@/components/IGridColumn';
 
-
 const route = useRoute();
-// const domainStore = useDomainsStore();
-// const entityStore = useEntitiesStore();
 const domainOverViewStore = useDomainOverviewStore();
 const propertyStore = usePropertiesStore();
-
-
-
 const emptyColumns: IGridColumn[] = [];
 const propertiesColumns = ref(emptyColumns);
 
-
-
+const propertyBeingEdited = ref(null)
 
 const actionsProperty = ref([
   {
     name: 'edit property',
     icon: 'mdi-pencil',
+    handler: async (id: string) => {
+        await domainOverViewStore.setSelectedProperty(id);
+        domainOverViewStore.setPropertyFormMode('update');
+        domainOverViewStore.setpropertyFormTitle('Edit property');
+        domainOverViewStore.selectPanelPropertyTab('form');
+    },
+  }, 
+  {
+    name: 'duplicate property',
+    icon: 'mdi-content-duplicate',
+    handler: async (id: string) => {
+        await domainOverViewStore.duplicateProperty(id);
+        // domainOverViewStore.setPropertyFormMode('update');
+        // domainOverViewStore.setpropertyFormTitle('Edit property');
+        // domainOverViewStore.selectPanelPropertyTab('form');
+    },
+  }, 
+  {
+    name: 'delete property',
+    icon: 'mdi-trash-can',
     handler: (id: string) => {
-      domainOverViewStore.setpropertyFormTitle('Edit property');
-      domainOverViewStore.setSelectedProperty(id);
-      domainOverViewStore.selectPanelPropertyTab('form');
+      // remove from database
+      // remove from properties list
+      domainOverViewStore.removeProperty(id);
     },
   }
 ]);
@@ -42,21 +55,17 @@ const toolbarActionsProperty = ref([
     handler: () => {
       router.push({
         path: `/properties/create`,
-        query: { onDomain: route.params.id, onEntity: domainOverViewStore.selectedDataEntity }
+        query: { onDomain: route.params.id, onEntity: domainOverViewStore.selectedDataEntity.id }
       });
     },
   },
 ]);
 
 
-
-
 onMounted(() => {
     propertiesColumns.value = propertyStore.columns.filter((c:IGridColumn) => {
         if(!c.foreignKey && c.name !== 'createdAt' && c.name !== 'updatedAt') return c;
     }) as IGridColumn[];
-
-
 });
 
 defineProps<{
@@ -64,14 +73,13 @@ defineProps<{
 }>()
 </script>
 <template>
-    <div class="column">
-        <div class="block">
+    <div class="block" v-if="domainOverViewStore.selectedDataEntity.id !== ''">
           <PropertyPanelTab :icon="icon" />
           <div class="box" v-if="domainOverViewStore.panelPropertySelected === 'form'">
             <PropertyForm />
           </div>
           <PropertyGrid
-            v-if="domainOverViewStore.selectedDataEntity !== '' && domainOverViewStore.panelPropertySelected === 'listing'"
+            v-if="domainOverViewStore.selectedDataEntity.id !== '' && domainOverViewStore.panelPropertySelected === 'listing'"
             key="properties" 
             title="Properties"
             :store="domainOverViewStore"
@@ -80,7 +88,5 @@ defineProps<{
             :icon="'mdi-alpha-e-box'" 
             :actions="actionsProperty"
           />
-        </div>
-        
-      </div>
+    </div>
 </template>

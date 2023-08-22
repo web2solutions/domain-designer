@@ -117,7 +117,7 @@ export const useEntitiesStore = defineStore({
             return document
         },
 
-        async remove (id: string): Promise<void> {
+        async remove (id: string): Promise<boolean> {
             this.loading = true
             const { isConfirmed } = await Swal.fire({
                 title: 'Delete entity',
@@ -139,6 +139,7 @@ export const useEntitiesStore = defineStore({
             } else {
                 this.loading = false;
             }
+            return isConfirmed
         },
 
         changePage(page: number): void {

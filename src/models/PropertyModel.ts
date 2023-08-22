@@ -13,19 +13,21 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     public domain_id: string;
     public entity_id: string;
     public description: string;
-    public spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject | null;
+    public spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject;
     constructor(record: IPropertyCreateDTO){
         super();
         this.name = record.name;
         this.domain_id = record.domain_id;
         this.entity_id = record.entity_id;
         this.description = record.description || '';
-        this.spec = null;
+        this.spec = record.spec || {};
         this.db = idx.db;
     }
 
-    save() {
-        return this.db.properties.add(this.toJSON());
+    async save() {
+        const rawDoc = this.toJSON()
+        const id = await this.db.properties.add(rawDoc)
+        return { ...rawDoc, id };
     }
 
     toJSON(): PropertySchema {

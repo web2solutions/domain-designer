@@ -19,8 +19,10 @@ export class EntityModel extends BaseModel implements EntitySchema {
         this.db = idx.db;
     }
 
-    save() {
-        return this.db.entities.add(this.toJSON());
+    async save() {
+        const rawDoc = this.toJSON()
+        const id = await this.db.entities.add(rawDoc)
+        return { ...rawDoc, id };
     }
 
     toJSON(): EntitySchema {

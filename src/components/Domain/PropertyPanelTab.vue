@@ -4,10 +4,16 @@ import { useDomainOverviewStore } from '@/stores';
 
 const domainOverViewStore = useDomainOverviewStore();
 
-function selectMainTab () {
+async function selectMainTab () {
+    await domainOverViewStore.setSelectedProperty('');  
     domainOverViewStore.setpropertyFormTitle('New property');
-    domainOverViewStore.setSelectedProperty('');
     domainOverViewStore.selectPanelPropertyTab('listing')
+}
+
+async function selectFormTab () {
+    // await domainOverViewStore.setSelectedProperty('');  
+    // domainOverViewStore.setpropertyFormTitle('New property');
+    domainOverViewStore.selectPanelPropertyTab('form')
 }
 
 defineProps<{
@@ -32,7 +38,7 @@ onMounted(() => {
           </li>
           <li 
             :class="domainOverViewStore.panelPropertySelected === 'form' ? 'is-active' : ''"
-            @click="domainOverViewStore.selectPanelPropertyTab('form')"
+            @click="selectFormTab()"
           >
             <a>
               <span class="icon is-small"><i class="mdi mdi-plus-circle" aria-hidden="true"></i></span>

@@ -9,7 +9,9 @@ const props = defineProps<{
   value: any,
   col: any,
   store: any,
+  maxLenght?: number,
 }>()
+
 
 
 </script>
@@ -40,7 +42,7 @@ const props = defineProps<{
           />
         </template>
         <template v-else>
-          {{ value }}
+          {{ maxLenght ? value.slice(0, +maxLenght) : value }}
         </template>
       </td>
     </template>
