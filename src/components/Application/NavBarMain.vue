@@ -135,6 +135,10 @@ async function AddInitialData(e: any) {
                 </a>
               </div>
             </div>
+            <a @click="AddInitialData($event)" title="Add data" class="navbar-item has-divider">
+              <span class="icon"><i class="mdi mdi-table"></i></span>
+              <span>Add data</span>
+            </a>
             <a href="#" title="About" class="navbar-item has-divider is-desktop-icon-only">
               <span class="icon"><i class="mdi mdi-help-circle-outline"></i></span>
               <span>About</span>
