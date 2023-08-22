@@ -29,6 +29,7 @@ let input_minimum = ref('');
 let input_maximum = ref('');
 let input_exclusiveMinimum = ref('');
 let input_exclusiveMaximum = ref('');
+let input_multipleOf = ref('');
 
 
 async function save (event: Event) {
@@ -69,6 +70,7 @@ function reset() {
     input_maximum.value = '';
     input_exclusiveMinimum.value = '';
     input_exclusiveMaximum.value = '';
+    input_multipleOf.value = ''
 
 
     domainOverViewStore.setPropertyFormMode('create');
@@ -128,6 +130,17 @@ const getHashSpec: Record<string, any> = {
       maximum: input_maximum.value,
       exclusiveMinimum: input_exclusiveMinimum.value,
       exclusiveMaximum: input_exclusiveMaximum.value,
+      multipleOf: input_multipleOf.value,
+    }
+  },
+  'integer': () => {
+    return {
+      format: input_format.value,
+      minimum: input_minimum.value,
+      maximum: input_maximum.value,
+      exclusiveMinimum: input_exclusiveMinimum.value,
+      exclusiveMaximum: input_exclusiveMaximum.value,
+      multipleOf: input_multipleOf.value,
     }
   }
 }
@@ -196,6 +209,7 @@ onMounted(() => {
       if (property.spec.maximum) input_maximum.value = property.spec.maximum as unknown as string;
       if (property.spec.exclusiveMinimum) input_exclusiveMinimum.value = property.spec.exclusiveMinimum as unknown as string;
       if (property.spec.exclusiveMaximum) input_exclusiveMaximum.value = property.spec.exclusiveMaximum as unknown as string;
+      if (property.spec.multipleOf) input_multipleOf.value = property.spec.multipleOf as unknown as string;
     }
 });
 
@@ -592,7 +606,28 @@ onUnmounted(() => {
             <!-- end input -->
           </div>
           <div class="column">
-            multipleOf
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_default">Multiple of</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      type="number" 
+                      class="input is-small"
+                      name="input_multipleOf"
+                      id="input_multipleOf" 
+                      v-model.number="input_multipleOf" 
+                      placeholder="Type a multiple Of value for this property"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+            
           </div>
         </div>
 
