@@ -116,15 +116,72 @@ async function buildGraph() {
         el: document.getElementById('paper'),
         width: +((window.getComputedStyle(document.getElementById('paper')?.parentElement as HTMLElement).getPropertyValue("width") as string).replace(/px/, '')) - 30,
         height: wrapperHeight,
-        gridSize: 1,
-        model: graph
+        gridSize: 10,
+        drawGrid: {
+            name: 'doubleMesh',
+            args: [
+                { color: 'red', thickness: 1 }, // settings for the primary mesh
+                { color: 'green', scaleFactor: 5, thickness: 5 } //settings for the secondary mesh
+        ]},
+        drawGridSize: 10,
+        //background: {
+        //  color: 'rgba(0, 255, 0, 0.3)'
+        //},
+        model: graph,
+        defaultLink: () => new joint.shapes.standard.Link({
+            attrs: {
+                wrapper: {
+                    cursor: 'default'
+                }
+            }
+        }),
     });
 
     const  uml = joint.shapes.uml;
 
     const  classes: any = { };
 
-    let x = 0;
+    let portsIn = {
+      id: '',
+      attrs: {
+        portBody: {
+          magnet: true,
+          r: 5,
+          fill: '#023047',
+          stroke: '#023047',
+          x: -5,
+          y: -5,
+        },
+        label: { 
+            text: 'port in' 
+        }
+      },
+      markup: [{
+        tagName: 'circle',
+        selector: 'portBody'
+      }]
+    };
+
+    let portsOut = {
+      id: '',
+      attrs: {
+        portBody: {
+          magnet: true,
+          r: 5,
+          fill: '#E6A502',
+          stroke: '#023047'
+        },
+        label: { 
+            text: 'port out' 
+        }
+      },
+      markup: [{
+        tagName: 'circle',
+        selector: 'portBody'
+      }]
+    };
+
+    let x = 10;
     let y = 0;
     const entities = await EntityModel.getAllByFilter('domain_id', domainOverViewStore.selectedDomain);
     const allProperties = await PropertyModel.getAllByFilter('domain_id', domainOverViewStore.selectedDomain);
@@ -134,6 +191,8 @@ async function buildGraph() {
       })
       // console.log(properties)
       const height = properties.map(() => 20).reduce((acc, num) => { return acc + num }, 40);
+      portsIn.id = `portIn_${entity.name}`
+      portsOut.id = `portOut_${entity.name}`
       classes[entity.name] = new uml.Class({
             position: { x, y },
             size: { width: 260, height },
@@ -142,6 +201,9 @@ async function buildGraph() {
               // console.log(property)
               return `+ ${property.name}: ${property.spec?.format ?  property.spec?.format + '(' + property.spec?.type + ')' : property.spec?.type}`;
             }),
+            ports: {
+                items: [ portsIn, portsOut ] // add a port in constructor,
+            },
             methods: [],
             attrs: {
                 '.uml-class-name-rect': {
@@ -153,16 +215,16 @@ async function buildGraph() {
                 '.uml-class-attrs-rect': {
                     fill: '#f5f5f5',
                     stroke: '#666',
-                    'stroke-width': 0.5
+                    'stroke-width': 0.5,
                 },
                 '.uml-class-methods-rect': {
                     fill: '#f5f5f5',
                     stroke: '#666',
-                    'stroke-width': 0.5
+                    'stroke-width': 0.5,
                 },
                 '.uml-class-methods-text, .uml-class-attrs-text': {
                     fill: '#fff',
-                    color: '#ffffff'
+                    color: '#ffffff',
                 }
             }
         })
@@ -181,18 +243,46 @@ async function buildGraph() {
       });
     });
 
+
+    /* var linkAttrs =  {
+        'fill': 'none',
+        'stroke-linejoin': 'round',
+        'stroke-width': '2',
+        'stroke': '#4b4a67'
+    }; */
+
+    // console.log(Object.keys(uml))
+
+    // console.log(classes)
+
     /* const  relations = [
-        new uml.Generalization({ source: { id: classes.man.id }, target: { id: classes.person.id }}),
+         new uml.Generalization({ source: { id: classes.man.id }, target: { id: classes.person.id }}),
         new uml.Generalization({ source: { id: classes.woman.id }, target: { id: classes.person.id }}),
         new uml.Implementation({ source: { id: classes.person.id }, target: { id: classes.mammal.id }}),
         new uml.Aggregation({ source: { id: classes.person.id }, target: { id: classes.address.id }}),
-        new uml.Composition({ source: { id: classes.person.id }, target: { id: classes.bloodgroup.id }})
-    ];
+        new uml.Composition({ source: { id: classes.person.id }, target: { id: classes.bloodgroup.id }}) 
+        new uml.Association({
+          source: { id: classes.Product.id },
+          target: { id: classes.ProductCategory.id },
+          // attrs: { '.connection': linkAttrs }
+      }),
+    ]; */
 
-    Object.keys(relations).forEach(function(key) {
-        graph.addCell(relations[key]);
-    });*/
     
+    
+    //const [productPortIn, productPortOut] = classes.Product.getPorts();
+    //const [productCategoryPortIn, productCategoryPortOut] = classes.ProductCategory.getPorts();
+    //console.log(classes.Product.getPorts(), productPortIn)
+    //console.log(classes.ProductCategory.getPorts(), productCategoryPortOut)
+
+    // console.log('xxxxxxxxxx', productPortIn.get('position'))
+    // element.getPorts()[0].id
+    // const link = new joint.shapes.standard.Link();
+    // link.set('source', { id: classes.Product.id });
+    // link.set('target', { id: classes.ProductCategory.id });
+    // link.source(classes.Product.getPorts()[1]);
+    //link.target(classes.ProductCategory);
+    // link.addTo(graph);
 
 
     // console.log(Object.keys(classes.Supplier),classes.Supplier)
@@ -282,7 +372,7 @@ onMounted(async () => {
       />
     </div>
     <div class="card" v-if="showOverAll === 'visual'">
-      <div class="card-content">
+      <div class="card-content gridbgd">
         <div id="paper">
           
         </div>
@@ -292,6 +382,10 @@ onMounted(async () => {
 <style>
 .paper{
   width: 100%;
+}
+.gridbgd{
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJ2LTEzIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj48ZGVmcyBpZD0idi0xMiI+PHBhdHRlcm4gaWQ9InBhdHRlcm5fMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48cmVjdCBpZD0idi0xNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI0FBQUFBQSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgaWQ9InYtMTYiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybl8wKSIvPjwvc3ZnPg==");
+  overflow: hidden;
 }
 .v-line { 
   font-size: 14px;

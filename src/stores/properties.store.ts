@@ -187,5 +187,15 @@ export const usePropertiesStore = defineStore({
             const documents: PropertySchema[] = await PropertyModel.getEntireCollection();
             return documents;            
         },
+
+        async getAllByEntityId (entity_id: string): Promise<PropertySchema[]> {
+            try {
+                const documents = await PropertyModel.getAllByFilter('entity_id', entity_id);
+                return documents;
+            } catch (error) {
+                console.log(error)
+                throw error;
+            }
+        }
     }
 });

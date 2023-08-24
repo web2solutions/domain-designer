@@ -11,17 +11,19 @@ export class EntityModel extends BaseModel implements EntitySchema {
     public name: string;
     public domain_id: string;
     public description: string;
+    public isSchemaOnly: boolean;
     constructor(record: IEntityCreateDTO){
         super();
         this.name = record.name;
-        this.domain_id = record.domain_id
+        this.domain_id = record.domain_id || ''
         this.description = record.description || '';
+        this.isSchemaOnly = record.isSchemaOnly || false;
         this.db = idx.db;
     }
 
     async save() {
-        const rawDoc = this.toJSON()
-        const id = await this.db.entities.add(rawDoc)
+        const rawDoc = this.toJSON();
+        const id = await this.db.entities.add(rawDoc);
         return { ...rawDoc, id };
     }
 
@@ -32,6 +34,7 @@ export class EntityModel extends BaseModel implements EntitySchema {
             name,
             domain_id,
             description,
+            isSchemaOnly: this.isSchemaOnly,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
         };

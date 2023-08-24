@@ -27,8 +27,8 @@ let input_nullable = ref(false);
 
 let input_minimum = ref('');
 let input_maximum = ref('');
-let input_exclusiveMinimum = ref('');
-let input_exclusiveMaximum = ref('');
+let input_exclusiveMinimum = ref(false);
+let input_exclusiveMaximum = ref(false);
 let input_multipleOf = ref('');
 
 
@@ -68,8 +68,8 @@ function reset() {
 
     input_minimum.value = '';
     input_maximum.value = '';
-    input_exclusiveMinimum.value = '';
-    input_exclusiveMaximum.value = '';
+    input_exclusiveMinimum.value = false;
+    input_exclusiveMaximum.value = false;
     input_multipleOf.value = ''
 
 
@@ -207,8 +207,8 @@ onMounted(() => {
 
       if (property.spec.minimum) input_minimum.value = property.spec.minimum as unknown as string;
       if (property.spec.maximum) input_maximum.value = property.spec.maximum as unknown as string;
-      if (property.spec.exclusiveMinimum) input_exclusiveMinimum.value = property.spec.exclusiveMinimum as unknown as string;
-      if (property.spec.exclusiveMaximum) input_exclusiveMaximum.value = property.spec.exclusiveMaximum as unknown as string;
+      if (property.spec.exclusiveMinimum) input_exclusiveMinimum.value = property.spec.exclusiveMinimum;
+      if (property.spec.exclusiveMaximum) input_exclusiveMaximum.value = property.spec.exclusiveMaximum;
       if (property.spec.multipleOf) input_multipleOf.value = property.spec.multipleOf as unknown as string;
     }
 });
@@ -560,49 +560,29 @@ onUnmounted(() => {
           <div class="column">
             
             <!-- start input is-small -->
-            <div class="field is-horizontal">
-              <div class="field-label is-small">
-                <label class="label" for="input_default">Exclusive min.</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input 
-                      type="number" 
-                      class="input is-small"
-                      name="input_exclusiveMinimum"
-                      id="input_exclusiveMinimum" 
-                      v-model.number="input_exclusiveMinimum" 
-                      placeholder="Type a exclusive minimum value for this property"
-                    />
-                  </div>
-                </div>
-              </div>
+            <div class="control">                    
+              <label class="checkbox field-label is-small" >
+                <input 
+                  type="checkbox"
+                  name="input_exclusiveMinimum" 
+                  v-model="input_exclusiveMinimum"
+                >
+                exclusive Minimum
+              </label>
             </div>
             <!-- end input -->
           </div>
           <div class="column">
             
             <!-- start input is-small -->
-            <div class="field is-horizontal">
-              <div class="field-label is-small">
-                <label class="label" for="input_default">Exclusive max.</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input 
-                      type="number" 
-                      class="input is-small"
-                      name="input_exclusiveMaximum"
-                      id="input_exclusiveMaximum" 
-                      v-model.number="input_exclusiveMaximum" 
-                      placeholder="Type a exclusive exclusive maximum value for this property"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+              <label class="checkbox field-label is-small" >
+                <input 
+                  type="checkbox"
+                  name="input_exclusiveMaximum" 
+                  v-model="input_exclusiveMaximum"
+                >
+                exclusive Maximum
+              </label>
             <!-- end input -->
           </div>
           <div class="column">

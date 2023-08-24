@@ -25,5 +25,7 @@ module.exports = {
   "globals": {
     "Chart": true,
     "joint": true,
+    "ace": true,
+    "LanguageProvider": true,
   }
 }

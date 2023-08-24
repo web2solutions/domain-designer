@@ -72,7 +72,7 @@ onMounted(async () => {
         (input_description.value as HTMLInputElement).value = record?.description;
       }
       if(input_domain_id.value) {
-        (input_domain_id.value as unknown as HTMLSelectElement).value = record.domain_id;
+        (input_domain_id.value as unknown as HTMLSelectElement).value = record.domain_id || '';
       }
       isUpdate = true;
       return;

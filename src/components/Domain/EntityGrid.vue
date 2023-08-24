@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { CrudListCell } from '../CRUD';
+import router from '@/router/index';
+
 
 const props = defineProps<{
   data: any[],
@@ -99,6 +101,10 @@ async function selectMainId(id: string) {
                                     </CrudListCell>
                                     <th class="is-actions-cell">
                                         <div class="buttons is-right">
+                                            <button class="button is-small is-light" type="button"
+                                                @click="router.push(`/entities/coder/${record.id}`)">
+                                                <span class="icon"><i class="mdi mdi-eye"></i></span>
+                                            </button>
                                             <button class="button is-small is-light" type="button"
                                                 @click="preview(record.id, $event)">
                                                 <span class="icon"><i class="mdi mdi-eye"></i></span>

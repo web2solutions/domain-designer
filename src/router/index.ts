@@ -88,6 +88,12 @@ export const routes = [
           name: 'Entity Overview',
           component: () => import('@/views/Entities/EntityOverview.vue'),
           props: { childName: 'Entity Overview', icon: 'mdi-ballot' },
+        },
+        { 
+          path: 'coder/:id',
+          name: 'Etity IDE',
+          component: () => import('@/views/Entities/ModuleCoder.vue'),
+          props: { childName: 'Entity IDE', icon: 'mdi-pencil' },
         }
     ]
   },
@@ -250,13 +256,13 @@ export const routes = [
     name: 'Appointments',
     component: () => import('@/views/Domains/ModuleDrawer.vue'),
     children: []
-  }, */
+  }, 
   { 
     name: 'wildcard', 
     path: '/:pathMatch(.*)*', 
     redirect: '/',
     props: { moduleName: 'wildcard', icon: 'mdi-account-box-outline' }
-  }
+  }*/
 ];
 
 const router = createRouter({

@@ -8,9 +8,12 @@ import JsonViewer from 'vue-json-viewer';
 import 'highlight.js/styles/stackoverflow-light.css'
 import hljs from 'highlight.js/lib/core';
 import yaml from 'highlight.js/lib/languages/yaml';
+import typescript from 'highlight.js/lib/languages/typescript';
 import hljsVuePlugin from '@highlightjs/vue-plugin';
 
 hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('typescript', typescript);
+// 
 
 // Import JsonViewer as a Vue.js plugin
 
