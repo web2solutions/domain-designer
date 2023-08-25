@@ -7,6 +7,7 @@ import { default as ControllerTypescript } from '@/components/Coder/ControllerTy
 import { default as ServiceTypescript } from '@/components/Coder/ServiceTypescript.vue';
 import { default as DataRepositoryTypescript } from '@/components/Coder/DataRepositoryTypescript.vue';
 import { default as DataModelTypescript } from '@/components/Coder/DataModelTypescript.vue'
+import { default as JsonSchemaTypescript } from '@/components/Coder/JsonSchemaTypescript.vue';
 import { useEntitiesStore, useDomainsStore, useAlertStore, usePropertiesStore } from '@/stores';
 // import type { IEntityCreateDTO } from '@/models/IEntityCreateDTO';
 import { DomainSchema } from '@/database/DomainSchema';
@@ -125,6 +126,14 @@ function changeTab (tabId: string) {
                     <a>
                         {{ entity.name  }}DataRepository
                     </a>
+                  </li>
+                  <li
+                    :class="showTab === 'JsonSchemaTab' ? 'is-active' : ''"
+                    @click="changeTab('JsonSchemaTab')"  
+                  >
+                    <a>
+                        {{ entity.name  }} JSON Schema
+                    </a>
                 </li>
                   <li
                     :class="showTab === 'Use cases' ? 'is-active' : ''"
@@ -143,6 +152,7 @@ function changeTab (tabId: string) {
               <ServiceTypescript v-if="showTab === 'ServiceTab'" :entity="entity" :properties="properties" />
               <DataRepositoryTypescript v-if="showTab === 'DataRepositoryTab'" :entity="entity" :properties="properties" />
               <DataModelTypescript  v-if="showTab === 'ModelTab'" :entity="entity" :properties="properties" />
+              <JsonSchemaTypescript  v-if="showTab === 'JsonSchemaTab'" :entity="entity" :properties="properties" />
           </div>
           <p></p>
       </div>

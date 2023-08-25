@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { CrudListCell } from '../CRUD';
 import router from '@/router/index';
+import { buildEntitySpec } from '../utils';
 
 
 const props = defineProps<{
@@ -19,28 +20,12 @@ onMounted(() => {
 const entitySpec = ref({});
 const showSpec = ref(false)
 
-function buildEntitySpec() {
-    const name = props.store.selectedDataEntity.name
-    console.log(name)
-    console.log(props.store.properties)
-    const spec: Record<string, any> = {};
-    spec[name] = {
-        required: [],
-        properties: {
-            
-        }
-    }
-    for(const property of props.store.properties) {
-        spec[name].properties[property.name] = { ...property.spec, description: property.description || '' }
-    }
-    return spec
-}
 
 async function preview(id: string, event: Event) {
     event.preventDefault();
     event.stopPropagation();
     await props.store.setSelectedDataEntity(id);
-    entitySpec.value = buildEntitySpec();
+    entitySpec.value = buildEntitySpec(props.store.selectedDataEntity.name, props.store.properties);
     showSpec.value = !showSpec.value;
 }
 

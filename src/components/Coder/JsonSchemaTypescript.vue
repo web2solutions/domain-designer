@@ -1,32 +1,26 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { openapiSchemaToJsonSchema }  from '@openapi-contrib/openapi-schema-to-json-schema';
 import type { EntitySchema } from '@/database/EntitySchema';
-import { modelLiteral } from './modelLiteral';
+import { buildEntitySpec } from '../utils';
 
-
+console.log(openapiSchemaToJsonSchema)
 const props = defineProps<{ 
     entity: EntitySchema;
     properties: any[]
 }>()
 
 onMounted(() => {
+
+    const schema = buildEntitySpec(props.entity.name, props.properties);
     
-    let templateString = modelLiteral
-        .replace(/_entityname_/g, '' + props.entity.name.toLowerCase())
-        .replace(/_ENTITYNAME_/g, '' + props.entity.name);
-    const lines: string[] = [];
-    props.properties.forEach(property => {
-        lines.push(`    ${property.name}: ${property.spec.type};`);
-    });
+    console.log(schema[props.entity.name]);
 
-    templateString = templateString.toString().replace(/_modelProperties_/gi, lines.join('\n'));
-
-
-    (document.getElementById('editorControllerTypescript') as HTMLElement).textContent = templateString;
+    (document.getElementById('editorControllerTypescript') as HTMLElement).textContent = JSON.stringify(openapiSchemaToJsonSchema(schema), null, '\t');
     ace.require("ace/ext/language_tools");
     const editor = ace.edit('editorControllerTypescript');
     editor.setTheme("ace/theme/tomorrow");
-    editor.session.setMode("ace/mode/typescript");
+    editor.session.setMode("ace/mode/json");
     editor.setOptions({
         enableBasicAutocompletion: true,
         enableSnippets: true,

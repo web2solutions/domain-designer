@@ -17,6 +17,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@openapi-contrib/openapi-schema-to-json-schema": "^5.1.0",
     "bulma": "^0.9.4",
     "dexie": "^3.2.4",
     "openapi-types": "^12.1.3",

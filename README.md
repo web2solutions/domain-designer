@@ -59,3 +59,10 @@ https://domain-designer.vercel.app/domains/list
 ![screen](https://i.imgur.com/vRsU4zs.png)
 ![screen](https://i.imgur.com/M8hqjtD.png)
 ![screen](https://i.imgur.com/mIS6YjE.png)
+
+
+![screen](https://i.imgur.com/ovhpYgt.png)
+![screen](https://i.imgur.com/DKnfLid.png)
+![screen](https://i.imgur.com/Xxg2Fp6.png)
+![screen](https://i.imgur.com/GNcCpzx.png)
+![screen](https://i.imgur.com/rYScKLn.png)
