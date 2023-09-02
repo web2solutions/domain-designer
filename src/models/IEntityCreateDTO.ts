@@ -4,4 +4,6 @@ export interface IEntityCreateDTO {
     domain_id?: string;
     isSchemaOnly?: boolean;
     description?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
