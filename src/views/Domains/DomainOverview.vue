@@ -228,7 +228,7 @@ async function buildGraph() {
                 }
             }
         })
-        x += 300
+        x += 330
     }
 
     Object.keys(classes).forEach(function(key) {
@@ -379,7 +379,7 @@ onMounted(async () => {
       </div>
     </div>
 </template>
-<style>
+<style scoped>
 .paper{
   width: 100%;
 }
