@@ -1,19 +1,26 @@
 <script setup lang="ts">
+import { DomainModel } from '@/models/DomainModel';
+import { EntityModel } from '@/models/EntityModel';
+import { PropertyModel } from '@/models/PropertyModel';
+
 
 import { domainsData } from'@/stores/domains';
 import { entitiesData } from'@/stores/entities';
+import { propertiesData } from '../../stores/properties';
 
 import {  
   useLanguageStore, 
   useSessionStore, 
   useAlertStore, 
   useDomainsStore, 
-  useEntitiesStore
+  useEntitiesStore,
+  usePropertiesStore,
 } from '@/stores';
 
 const alertStore = useAlertStore();
 const domainStore = useDomainsStore();
 const entityStore = useEntitiesStore();
+const propertyStore = usePropertiesStore();
 const languageStore: any = useLanguageStore();
 const sessionStore: any = useSessionStore();
 
@@ -35,9 +42,48 @@ async function AddInitialData(e: any) {
     await domainStore.create(domain);
   }
   for(const entity of entitiesData as any) {
-    entity.domain_id = domainStore.records[0].id
     await entityStore.create(entity);
   }
+  for(const property of propertiesData as any) {
+    await propertyStore.create(property);
+  }
+  alertStore.success(`Data is done`);
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || 'download';
+  const clickHandler = () => {
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      removeEventListener('click', clickHandler);
+    }, 150);
+  };
+  a.addEventListener('click', clickHandler, false);
+  a.click();
+  return a;
+}
+
+async function doDatabaseBackup(e: any) {
+  e.stopPropagation();
+  e.preventDefault();
+  alertStore.success(`Preparing database backup`);
+  const domains = await DomainModel.getEntireCollection();
+  const entities = await EntityModel.getEntireCollection();
+  const properties = await PropertyModel.getEntireCollection();
+  const database = {
+    domains,
+    entities,
+    properties
+  };
+  console.log(database)
+  const blob = new Blob([JSON.stringify(database)], { type: 'application/json' });
+  //const file = new File([ blob ], 'domains.json');
+
+  downloadBlob(blob, 'database.json')
+  
   alertStore.success(`Data is done`);
 }
 
@@ -97,8 +143,13 @@ async function AddInitialData(e: any) {
               <div class="navbar-dropdown">
                 <a @click="AddInitialData($event)" 
                   class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-email"></i></span>
+                  <span class="icon"><i class="mdi mdi-database-arrow-up"></i></span>
                   <span>{{ languageStore.default.application.AddInitialData }}</span>
+                </a>
+                <a @click="doDatabaseBackup($event)" 
+                  class="navbar-item">
+                  <span class="icon"><i class="mdi mdi-database-arrow-down"></i></span>
+                  <span>{{ languageStore.default.application.DatabaseBackup }}</span>
                 </a>
                 <hr class="navbar-divider">
                 <router-link to="/profile" class="navbar-item">
