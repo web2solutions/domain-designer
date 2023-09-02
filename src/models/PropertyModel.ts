@@ -16,6 +16,7 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     public spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject;
     constructor(record: IPropertyCreateDTO){
         super();
+        this.id = record.id || super.id;
         this.name = record.name;
         this.domain_id = record.domain_id;
         this.entity_id = record.entity_id;
@@ -28,6 +29,15 @@ export class PropertyModel extends BaseModel implements PropertySchema {
         const rawDoc = this.toJSON()
         const id = await this.db.properties.add(rawDoc)
         return { ...rawDoc, id };
+    }
+
+    async count () {
+        try {
+            return await idx.db.properties.toCollection().count();
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
     }
 
     toJSON(): PropertySchema {

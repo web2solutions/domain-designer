@@ -12,6 +12,7 @@ export class DomainModel extends BaseModel implements DomainSchema {
     public description: string;
     constructor(record: IDomainCreateDTO){
         super();
+        this.id = record.id || super.id;
         this.name = record.name;
         this.description = record.description || '';
         this.db = idx.db;
@@ -21,6 +22,15 @@ export class DomainModel extends BaseModel implements DomainSchema {
         const rawDoc = this.toJSON()
         const id = await this.db.domains.add(rawDoc)
         return { ...rawDoc, id };
+    }
+
+    async count () {
+        try {
+            return await idx.db.domains.toCollection().count();
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
     }
 
     toJSON(): DomainSchema {

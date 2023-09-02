@@ -14,6 +14,7 @@ export class EntityModel extends BaseModel implements EntitySchema {
     public isSchemaOnly: boolean;
     constructor(record: IEntityCreateDTO){
         super();
+        this.id = record.id || super.id;
         this.name = record.name;
         this.domain_id = record.domain_id || ''
         this.description = record.description || '';
@@ -25,6 +26,15 @@ export class EntityModel extends BaseModel implements EntitySchema {
         const rawDoc = this.toJSON();
         const id = await this.db.entities.add(rawDoc);
         return { ...rawDoc, id };
+    }
+
+    async count () {
+        try {
+            return await idx.db.entities.toCollection().count();
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
     }
 
     toJSON(): EntitySchema {
