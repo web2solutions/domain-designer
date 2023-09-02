@@ -1,14 +1,228 @@
 <script setup lang="ts">
-/*global Chart*/
-
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { RouteRecordName } from 'vue-router';
 import { BreadCrumbMain } from '@/components/Application/index';
-import { formatCurrency } from '@/components/CRUD/utils';
-import { useLanguageStore } from '@/stores';
-import { useDomainsStore } from '@/stores/domains.store';
+// import { formatCurrency } from '@/components/CRUD/utils';
+
+import { useDomainsStore, useLanguageStore, useEntitiesStore, usePropertiesStore } from '@/stores';
+import { DomainModel } from '@/models/DomainModel';
+import { EntityModel } from '@/models/EntityModel';
+import { PropertyModel } from '@/models/PropertyModel';
 
 const languageStore: any = useLanguageStore();
+const domainStore = useDomainsStore();
+const entityStore = useEntitiesStore();
+const propertyStore = usePropertiesStore();
+
+const visualDomainPanelLoading = ref(true)
+
+function destroyGraph(): void {
+  (document.getElementById('paper') as HTMLElement).innerHTML = '';
+}
+
+async function buildGraph() {
+  // visualDomainPanelLoading.value = true;
+  const  graph = new joint.dia.Graph();
+    const wrapperHeight = 200;
+    
+    const paper = new joint.dia.Paper({
+        el: document.getElementById('paper'),
+        width: +((window.getComputedStyle(document.getElementById('paper')?.parentElement as HTMLElement).getPropertyValue("width") as string).replace(/px/, '')) - 30,
+        height: +((window.getComputedStyle(document.getElementById('paper')?.parentElement as HTMLElement).getPropertyValue("height") as string).replace(/px/, '')) - 30,
+        gridSize: 10,
+        drawGrid: {
+            name: 'doubleMesh',
+            args: [
+                { color: 'red', thickness: 1 }, // settings for the primary mesh
+                { color: 'green', scaleFactor: 5, thickness: 5 } //settings for the secondary mesh
+        ]},
+        drawGridSize: 10,
+        //background: {
+        //  color: 'rgba(0, 255, 0, 0.3)'
+        //},
+        model: graph,
+        defaultLink: () => new joint.shapes.standard.Link({
+            attrs: {
+                wrapper: {
+                    cursor: 'default'
+                }
+            }
+        }),
+    });
+
+    const  uml = joint.shapes.uml;
+
+    const  classes: any = { };
+
+    let portsIn = {
+      id: '',
+      attrs: {
+        portBody: {
+          magnet: true,
+          r: 5,
+          fill: '#023047',
+          stroke: '#023047',
+          x: -5,
+          y: -5,
+        },
+        label: { 
+            text: 'port in' 
+        }
+      },
+      markup: [{
+        tagName: 'circle',
+        selector: 'portBody'
+      }]
+    };
+
+    let portsOut = {
+      id: '',
+      attrs: {
+        portBody: {
+          magnet: true,
+          r: 5,
+          fill: '#E6A502',
+          stroke: '#023047'
+        },
+        label: { 
+            text: 'port out' 
+        }
+      },
+      markup: [{
+        tagName: 'circle',
+        selector: 'portBody'
+      }]
+    };
+
+    let x = 10;
+    let y = 0;
+    const entities = (await EntityModel.getEntireCollection()).sort(function (a, b): number {
+      // console.log(a.id, b.id)
+      if(a.domain_id && b.domain_id) {
+        if(a.domain_id < b.domain_id) {
+          return 1;
+        } else if(a.id === b.id) {
+          return 0;
+        } else {
+          return -1
+        }
+      }
+      return -1
+    });
+    const allProperties = await PropertyModel.getEntireCollection();
+    let placedItems = 0;
+    for(const entity of entities) {
+      const properties = allProperties.filter(p => {
+        if(p.entity_id === entity.id) return p
+      })
+      // console.log(properties)
+      const height = properties.map(() => 20).reduce((acc, num) => { return acc + num }, 40);
+      portsIn.id = `portIn_${entity.name}`
+      portsOut.id = `portOut_${entity.name}`
+      classes[entity.name] = new uml.Class({
+            position: { x, y },
+            size: { width: 260, height },
+            name: entity.name,
+            attributes: properties.map(property => {
+              // console.log(property)
+              return `+ ${property.name}: ${property.spec?.format ?  property.spec?.format + '(' + property.spec?.type + ')' : property.spec?.type}`;
+            }),
+            ports: {
+                items: [ portsIn, portsOut ] // add a port in constructor,
+            },
+            methods: [],
+            attrs: {
+                '.uml-class-name-rect': {
+                    fill: '#485fc7',
+                    stroke: '#666',
+                    color: '#ffffff',
+                    'stroke-width': 0.5,
+                },
+                '.uml-class-attrs-rect': {
+                    fill: '#f5f5f5',
+                    stroke: '#666',
+                    'stroke-width': 0.5,
+                },
+                '.uml-class-methods-rect': {
+                    fill: '#f5f5f5',
+                    stroke: '#666',
+                    'stroke-width': 0.5,
+                },
+                '.uml-class-methods-text, .uml-class-attrs-text': {
+                    fill: '#fff',
+                    color: '#ffffff',
+                }
+            }
+        })
+        placedItems += 1;
+
+        
+        x += 330
+
+        if( (placedItems % 4) === 0) {
+          y += 250;
+          x = 10
+        }
+    }
+
+    Object.keys(classes).forEach(function(key) {
+        graph.addCell(classes[key]);
+    });
+    Object.keys(classes).forEach(function(key) {
+      classes[key].on('change:position', function(a: any) {
+        console.log('a', a)
+       //  a.attributes.name
+        console.log(classes[key].get('position'))
+        paper.fitToContent();
+      });
+    });
+
+
+    /* var linkAttrs =  {
+        'fill': 'none',
+        'stroke-linejoin': 'round',
+        'stroke-width': '2',
+        'stroke': '#4b4a67'
+    }; */
+
+    // console.log(Object.keys(uml))
+
+    // console.log(classes)
+
+    /* const  relations = [
+         new uml.Generalization({ source: { id: classes.man.id }, target: { id: classes.person.id }}),
+        new uml.Generalization({ source: { id: classes.woman.id }, target: { id: classes.person.id }}),
+        new uml.Implementation({ source: { id: classes.person.id }, target: { id: classes.mammal.id }}),
+        new uml.Aggregation({ source: { id: classes.person.id }, target: { id: classes.address.id }}),
+        new uml.Composition({ source: { id: classes.person.id }, target: { id: classes.bloodgroup.id }}) 
+        new uml.Association({
+          source: { id: classes.Product.id },
+          target: { id: classes.ProductCategory.id },
+          // attrs: { '.connection': linkAttrs }
+      }),
+    ]; */
+
+    
+    
+    //const [productPortIn, productPortOut] = classes.Product.getPorts();
+    //const [productCategoryPortIn, productCategoryPortOut] = classes.ProductCategory.getPorts();
+    //console.log(classes.Product.getPorts(), productPortIn)
+    //console.log(classes.ProductCategory.getPorts(), productCategoryPortOut)
+
+    // console.log('xxxxxxxxxx', productPortIn.get('position'))
+    // element.getPorts()[0].id
+    // const link = new joint.shapes.standard.Link();
+    // link.set('source', { id: classes.Product.id });
+    // link.set('target', { id: classes.ProductCategory.id });
+    // link.source(classes.Product.getPorts()[1]);
+    //link.target(classes.ProductCategory);
+    // link.addTo(graph);
+
+
+    // console.log(Object.keys(classes.Supplier),classes.Supplier)
+    visualDomainPanelLoading.value = false;
+}
+
 
 defineProps<{
   moduleName: RouteRecordName | null | undefined,
@@ -17,602 +231,135 @@ defineProps<{
 
 onMounted(async() => {
 
-  const domainStore = useDomainsStore();
   await domainStore.sync();
+  await entityStore.sync()
+  await propertyStore.sync();
 
-  const randomChartData = function randomChartData(n: number) {
-      const data = [];
-
-      for (let i = 0; i < n; i++) {
-        data.push(Math.round(Math.random() * 200));
-      }
-
-      return data;
-    };
-
-    const chartColors = {
-      "default": {
-        primary: '#00D1B2',
-        info: '#209CEE',
-        danger: '#FF3860'
-      }
-    };
-    const hEl: HTMLElement | null = document?.getElementById('big-line-chart')
-    const canvas: HTMLCanvasElement | null = hEl ? hEl as HTMLCanvasElement : null;
-    const ctx: CanvasRenderingContext2D | null | undefined = canvas?.getContext('2d');
-    /* eslint-disable */
-    new window.Chart(ctx, {
-      type: 'line',
-      data: {
-        datasets: [{
-          fill: false,
-          borderColor: chartColors["default"].primary,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: chartColors["default"].primary,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: chartColors["default"].primary,
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: randomChartData(9)
-        }, {
-          fill: false,
-          borderColor: chartColors["default"].info,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: chartColors["default"].info,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: chartColors["default"].info,
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: randomChartData(9)
-        }, {
-          fill: false,
-          borderColor: chartColors["default"].danger,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: chartColors["default"].danger,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: chartColors["default"].danger,
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: randomChartData(9)
-        }],
-        labels: ['01', '02', '03', '04', '05', '06', '07', '08', '09']
-      },
-      options: {
-        maintainAspectRatio: false,
-        legend: {
-          display: false
-        },
-        responsive: true,
-        tooltips: {
-          backgroundColor: '#f5f5f5',
-          titleFontColor: '#333',
-          bodyFontColor: '#666',
-          bodySpacing: 4,
-          xPadding: 12,
-          mode: 'nearest',
-          intersect: 0,
-          position: 'nearest'
-        },
-        scales: {
-          yAxes: [{
-            barPercentage: 1.6,
-            gridLines: {
-              drawBorder: false,
-              color: 'rgba(29,140,248,0.0)',
-              zeroLineColor: 'transparent'
-            },
-            ticks: {
-              padding: 20,
-              fontColor: '#9a9a9a'
-            }
-          }],
-          xAxes: [{
-            barPercentage: 1.6,
-            gridLines: {
-              drawBorder: false,
-              color: 'rgba(225,78,202,0.1)',
-              zeroLineColor: 'transparent'
-            },
-            ticks: {
-              padding: 20,
-              fontColor: '#9a9a9a'
-            }
-          }]
-        }
-      }
-    });
+  await buildGraph();
 });
 </script>
 
 <template>
       <BreadCrumbMain v-bind:moduleName="moduleName" childName="" />
       <section class="section is-main-section">
-        <div class="tile is-ancestor">
-          <div class="tile is-parent">
-            <div class="card tile is-child">
-              <div class="card-content">
-                <div class="level is-mobile">
-                  <div class="level-item">
-                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Customers }}
-                    </h3>
-                      <h1 class="title">
-                        512
-                      </h1>
-                    </div>
-                  </div>
-                  <div class="level-item has-widget-icon">
-                    <div class="is-widget-icon"><span class="icon has-text-primary is-large"><i
-                        class="mdi mdi-account-multiple mdi-48px"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tile is-parent">
-            <div class="card tile is-child">
-              <div class="card-content">
-                <div class="level is-mobile">
-                  <div class="level-item">
-                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Sales }}
-                    </h3>
-                      <h1 class="title">
-                        
-                        {{ formatCurrency(7770) }}
-                      </h1>
-                    </div>
-                  </div>
-                  <div class="level-item has-widget-icon">
-                    <div class="is-widget-icon"><span class="icon has-text-info is-large"><i
-                        class="mdi mdi-cart-outline mdi-48px"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tile is-parent">
-            <div class="card tile is-child">
-              <div class="card-content">
-                <div class="level is-mobile">
-                  <div class="level-item">
-                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Performance }}
-                    </h3>
-                      <h1 class="title">
-                        256%
-                      </h1>
-                    </div>
-                  </div>
-                  <div class="level-item has-widget-icon">
-                    <div class="is-widget-icon"><span class="icon has-text-success is-large"><i
-                        class="mdi mdi-finance mdi-48px"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tile is-ancestor">
-          <div class="tile is-parent">
-            <div class="card tile is-child">
-              <div class="card-content">
-                <div class="level is-mobile">
-                  <div class="level-item">
-                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Customers }}
-                    </h3>
-                      <h1 class="title">
-                        512
-                      </h1>
-                    </div>
-                  </div>
-                  <div class="level-item has-widget-icon">
-                    <div class="is-widget-icon"><span class="icon has-text-primary is-large"><i
-                        class="mdi mdi-account-multiple mdi-48px"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tile is-parent">
-            <div class="card tile is-child">
-              <div class="card-content">
-                <div class="level is-mobile">
-                  <div class="level-item">
-                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Sales }}
-                    </h3>
-                      <h1 class="title">
-                        {{ formatCurrency(8609) }}
-                      </h1>
-                    </div>
-                  </div>
-                  <div class="level-item has-widget-icon">
-                    <div class="is-widget-icon"><span class="icon has-text-info is-large"><i
-                        class="mdi mdi-cart-outline mdi-48px"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tile is-parent">
-            <div class="card tile is-child">
-              <div class="card-content">
-                <div class="level is-mobile">
-                  <div class="level-item">
-                    <div class="is-widget-label"><h3 class="subtitle is-spaced">
-                      {{ languageStore.default.dashboard.Performance }}
-                    </h3>
-                      <h1 class="title">
-                        256%
-                      </h1>
-                    </div>
-                  </div>
-                  <div class="level-item has-widget-icon">
-                    <div class="is-widget-icon"><span class="icon has-text-success is-large"><i
-                        class="mdi mdi-finance mdi-48px"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <header class="card-header">
-            <p class="card-header-title">
-              <span class="icon"><i class="mdi mdi-finance"></i></span>
-              {{ languageStore.default.dashboard.Performance }}
-            </p>
-            <a href="#" class="card-header-icon">
-              <span class="icon"><i class="mdi mdi-reload"></i></span>
-            </a>
-          </header>
-          <div class="card-content">
-            <div class="chart-area">
-              <div style="height: 100%;">
-                <div class="chartjs-size-monitor">
-                  <div class="chartjs-size-monitor-expand">
-                    <div></div>
-                  </div>
-                  <div class="chartjs-size-monitor-shrink">
-                    <div></div>
-                  </div>
-                </div>
-                <canvas id="big-line-chart" width="2992" height="1000" class="chartjs-render-monitor" style="display: block; height: 400px; width: 1197px;"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--
-        <div class="card has-table has-mobile-sort-spaced">
-          <header class="card-header">
-            <p class="card-header-title">
-              <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-              {{ languageStore.default.dashboard.Customers }}
-            </p>
-            <a href="#" class="card-header-icon">
-              <span class="icon"><i class="mdi mdi-reload"></i></span>
-            </a>
-          </header>
-          <div class="card-content">
-            <div class="b-table has-pagination">
-              <div class="table-wrapper has-mobile-cards">
-                <table class="table is-fullwidth is-striped is-hoverable is-sortable is-fullwidth">
-                  <thead>
-                  <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Company</th>
-                    <th>City</th>
-                    <th>Progress</th>
-                    <th>Created</th>
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/rebecca-bauch.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Rebecca Bauch</td>
-                    <td data-label="Company">Daugherty-Daniel</td>
-                    <td data-label="City">South Cory</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="79">79</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Oct 25, 2020">Oct 25, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/felicita-yundt.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Felicita Yundt</td>
-                    <td data-label="Company">Johns-Weissnat</td>
-                    <td data-label="City">East Ariel</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="67">67</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Jan 8, 2020">Jan 8, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/mr-larry-satterfield-v.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Mr. Larry Satterfield V</td>
-                    <td data-label="Company">Hyatt Ltd</td>
-                    <td data-label="City">Windlerburgh</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="16">16</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Dec 18, 2020">Dec 18, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/mr-broderick-kub.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Mr. Broderick Kub</td>
-                    <td data-label="Company">Kshlerin, Bauch and Ernser</td>
-                    <td data-label="City">New Kirstenport</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="71">71</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Sep 13, 2020">Sep 13, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/barry-weber.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Barry Weber</td>
-                    <td data-label="Company">Schulist, Mosciski and Heidenreich</td>
-                    <td data-label="City">East Violettestad</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="80">80</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Jul 24, 2020">Jul 24, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/bert-kautzer-md.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Bert Kautzer MD</td>
-                    <td data-label="Company">Gerhold and Sons</td>
-                    <td data-label="City">Mayeport</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="62">62</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Mar 30, 2020">Mar 30, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/lonzo-steuber.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Lonzo Steuber</td>
-                    <td data-label="Company">Skiles Ltd</td>
-                    <td data-label="City">Marilouville</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="17">17</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Feb 12, 2020">Feb 12, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/jonathon-hahn.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Jonathon Hahn</td>
-                    <td data-label="Company">Flatley Ltd</td>
-                    <td data-label="City">Billiemouth</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="74">74</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Dec 30, 2020">Dec 30, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/ryley-wuckert.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Ryley Wuckert</td>
-                    <td data-label="Company">Heller-Little</td>
-                    <td data-label="City">Emeraldtown</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="54">54</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Jun 28, 2020">Jun 28, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img src="https://avatars.dicebear.com/v2/initials/sienna-hayes.svg" class="is-rounded">
-                      </div>
-                    </td>
-                    <td data-label="Name">Sienna Hayes</td>
-                    <td data-label="Company">Conn, Jerde and Douglas</td>
-                    <td data-label="City">Jonathanfort</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress max="100" class="progress is-small is-primary" value="55">55</progress>
-                    </td>
-                    <td data-label="Created">
-                      <small class="has-text-grey is-abbr-like" title="Mar 7, 2020">Mar 7, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
-                      <div class="buttons is-right">
-                        <button class="button is-small is-primary" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button is-small is-danger jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="notification">
-                <div class="level">
-                  <div class="level-left">
+        <div class="padding">
+          <div class="tile is-ancestor">
+            <div class="tile is-parent">
+              <div class="card tile is-child">
+                <div class="card-content">
+                  <div class="level is-mobile">
                     <div class="level-item">
-                      <div class="buttons has-addons">
-                        <button type="button" class="button is-active">1</button>
-                        <button type="button" class="button">2</button>
-                        <button type="button" class="button">3</button>
+                      <div class="is-widget-label"><h3 class="subtitle is-spaced">
+                        {{ languageStore.default.dashboard.Domains }}
+                      </h3>
+                        <h1 class="title">
+                          {{ domainStore.total }}
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="level-item has-widget-icon">
+                      <div class="is-widget-icon"><span class="icon has-text-primary is-large"><i
+                          class="mdi mdi-group mdi-48px"></i></span>
                       </div>
                     </div>
                   </div>
-                  <div class="level-right">
+                </div>
+              </div>
+            </div>
+            <div class="tile is-parent">
+              <div class="card tile is-child">
+                <div class="card-content">
+                  <div class="level is-mobile">
                     <div class="level-item">
-                      <small>Page 1 of 3</small>
+                      <div class="is-widget-label">
+                        <h3 class="subtitle is-spaced">
+                          {{ languageStore.default.dashboard.DataEntities }}
+                        </h3>
+                        <!-- <h1 class="title">
+                          
+                          {{ formatCurrency(7770) }}
+                        </h1> -->
+                        <h1 class="title">
+                          
+                          {{ entityStore.total }}
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="level-item has-widget-icon">
+                      <div class="is-widget-icon"><span class="icon has-text-info is-large"><i
+                          class="mdi mdi-database mdi-48px"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tile is-parent">
+              <div class="card tile is-child">
+                <div class="card-content">
+                  <div class="level is-mobile">
+                    <div class="level-item">
+                      <div class="is-widget-label"><h3 class="subtitle is-spaced">
+                        {{ languageStore.default.dashboard.ValueObjects }}
+                      </h3>
+                        <h1 class="title">
+                          {{ propertyStore.total }}
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="level-item has-widget-icon">
+                      <div class="is-widget-icon"><span class="icon has-text-success is-large"><i
+                          class="mdi mdi-book-information-variant mdi-48px"></i></span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">
+                <span class="icon"><i class="mdi mdi-set-none"></i></span>
+                {{ languageStore.default.dashboard.DataEntitiesVisualRepresentation }}
+              </p>
+              <a href="#" class="card-header-icon">
+                <span class="icon"><i class="mdi mdi-reload"></i></span>
+              </a>
+            </header>
+            <div class="card-content">
+              <div class="card">
+                <div class="card-content gridbgd">
+                  <div id="paper">
+                    xxxxx
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
         </div>
-        -->
+        
       </section>
 </template>
+<style scope>
+.padding{
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+.paper{
+  width: 100%;
+  overflow: auto;
+}
+.gridbgd{
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJ2LTEzIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj48ZGVmcyBpZD0idi0xMiI+PHBhdHRlcm4gaWQ9InBhdHRlcm5fMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48cmVjdCBpZD0idi0xNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI0FBQUFBQSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgaWQ9InYtMTYiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybl8wKSIvPjwvc3ZnPg==");
+  overflow: auto;
+  height: 50vh;
+}
+.v-line { 
+  font-size: 14px;
+  font-family: Nunito;
+  color: #fff;
+}
+</style>
