@@ -89,6 +89,24 @@ export const useAlertStore = defineStore({
         info(message: string) {
             this.alert = { message, type: 'notification is-info' };
             this.show = true;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: _time_out_,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                },
+            })
+            Toast.fire({
+                icon: 'info',
+                title: 'Info',
+                text: message,
+            });
+            clearTimeout(this.closer);
+            this.closer = setTimeout(() => this.show = false, _time_out_)
         },
         link(message: string) {
             this.alert = { message, type: 'notification is-link' };
