@@ -101,6 +101,7 @@ export const usePropertiesStore = defineStore({
             // console.log(rawDocument);
             this.records.push(rawDocument);
             this.loading = false;
+            this.total += 1;
             return rawDocument;
         },
 
