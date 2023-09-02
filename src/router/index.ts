@@ -21,6 +21,20 @@ export const routes = [
     props: { moduleName: 'List Domains' },
   }, */
   {
+    path: '/apis',
+    props: { moduleName: 'API Designer', icon: 'mdi-pencil-ruler' },
+    name: 'API Designer',
+    component: () => import('@/views/Domains/ModuleDrawer.vue'),
+    children: [
+        { 
+          path: 'import',
+          name: 'Import OAS API',
+          component: () => import('@/views/API/APIIMporter.vue'),
+          props: { childName: 'Import OAS API', icon: 'mdi-table' },
+        },
+    ]
+  },
+  {
     path: '/domains',
     props: { moduleName: 'Domain Designer', icon: 'mdi-pencil-ruler' },
     name: 'Domain Designer',
@@ -275,19 +289,13 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   const entityStore = useEntitiesStore();
   console.log(to.path);
-  if(to.path === '/entities/create' ) {
+  if(to.path === '/entities/create' || to.path === '/properties/create' || (to.path as string).indexOf('/entities/coder/') > -1 ) {
       console.log(from.path)
       if(from.path.toString().indexOf('domains/overview')) {
         // back to verview
         entityStore.goTo = from.path;
       }
-  } else if(to.path === '/properties/create' ) {
-    console.log(from.path)
-    if(from.path.toString().indexOf('domains/overview')) {
-      // back to verview
-      entityStore.goTo = from.path;
-    }
-}
+  }
 });
 
 export default router
