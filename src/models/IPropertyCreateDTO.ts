@@ -5,5 +5,7 @@ export interface IPropertyCreateDTO {
     domain_id: string;
     entity_id: string;
     description?: string;
-    spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject,
+    spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
