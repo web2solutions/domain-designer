@@ -36,7 +36,7 @@ onMounted(() => {
 
     ace.require("ace/ext/language_tools");
     const editor = ace.edit('editorServiceTypescript');
-    editor.setTheme("ace/theme/tomorrow");
+    editor.setTheme("ace/theme/dracula");
     editor.session.setMode("ace/mode/typescript");
     editor.setOptions({
         enableBasicAutocompletion: true,
@@ -60,10 +60,9 @@ onMounted(() => {
 </template>
 <style scoped>
 #editorServiceTypescript { 
-    position: absolute;
-    top: 40px;
+    height: 95%;
+    left: 3px;
     right: 5px;
-    left: 5px;
-    height: 78vh;
+    top: -10px;
 }
 </style>

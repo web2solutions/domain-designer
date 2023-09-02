@@ -4,7 +4,7 @@ import { openapiSchemaToJsonSchema }  from '@openapi-contrib/openapi-schema-to-j
 import type { EntitySchema } from '@/database/EntitySchema';
 import { buildEntitySpec } from '../utils';
 
-console.log(openapiSchemaToJsonSchema)
+
 const props = defineProps<{ 
     entity: EntitySchema;
     properties: any[]
@@ -19,7 +19,7 @@ onMounted(() => {
     (document.getElementById('editorControllerTypescript') as HTMLElement).textContent = JSON.stringify(openapiSchemaToJsonSchema(schema), null, '\t');
     ace.require("ace/ext/language_tools");
     const editor = ace.edit('editorControllerTypescript');
-    editor.setTheme("ace/theme/tomorrow");
+    editor.setTheme("ace/theme/dracula");
     editor.session.setMode("ace/mode/json");
     editor.setOptions({
         enableBasicAutocompletion: true,
@@ -55,10 +55,9 @@ onMounted(() => {
 </template>
 <style scoped>
 #editorControllerTypescript { 
-    position: absolute;
-    top: 40px;
+    height: 95%;
+    left: 3px;
     right: 5px;
-    left: 5px;
-    height: 78vh;
+    top: -10px;
 }
 </style>

@@ -90,14 +90,34 @@ const showTab = ref('ControllerTab');
 function changeTab (tabId: string) {
     showTab.value = tabId;
 }
-
-
 </script>
 
 <template>
   <div class="card">
       <header class="card-header">
-          <div class="tabs is-boxed is-small">
+        <p class="card-header-title">
+          <span class="icon"><i class="mdi mdi-xml"></i></span>
+          Code Editor - {{ entity.name  }}
+        </p>
+        <p class="card-header-icon">
+          <a 
+            class="button is-small"
+            @click="goToMainView()"
+          >
+            <span class="icon"><i class="mdi mdi-download"></i></span>
+          </a>
+          <a 
+            class="button is-small is-danger"
+            @click="goToMainView()"
+          >
+            <span class="icon"><i class="mdi mdi-close-circle"></i></span>
+          </a>
+        </p>
+      </header>
+      <div class="card-content">
+        
+          <div v-if="entity.id && properties.length > 0" class="box ide">
+              <div class="tabs is-boxed is-small">
               <ul>
                     <li 
                         :class="showTab === 'ControllerTab' ? 'is-active' : ''"
@@ -144,17 +164,21 @@ function changeTab (tabId: string) {
                     </a>
                 </li>
               </ul>
-          </div>
-      </header>
-      <div class="card-content">
-          <div v-if="entity.id && properties.length > 0" class="block">
+              </div>
               <ControllerTypescript v-if="showTab === 'ControllerTab'" :entity="entity" :properties="properties" />
               <ServiceTypescript v-if="showTab === 'ServiceTab'" :entity="entity" :properties="properties" />
               <DataRepositoryTypescript v-if="showTab === 'DataRepositoryTab'" :entity="entity" :properties="properties" />
               <DataModelTypescript  v-if="showTab === 'ModelTab'" :entity="entity" :properties="properties" />
               <JsonSchemaTypescript  v-if="showTab === 'JsonSchemaTab'" :entity="entity" :properties="properties" />
           </div>
-          <p></p>
+          
       </div>
   </div>
 </template>
+<style scoped>
+.ide{
+  height: 68vh; 
+  overflow: hidden;
+  z-index: 1;
+}
+</style>
