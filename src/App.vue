@@ -56,3 +56,8 @@ onMounted(async () => {
   <RouterView />
   <FooterMain />
 </template>
+<style>
+body {
+  overflow: hidden!;
+}
+</style>
