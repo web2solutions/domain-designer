@@ -132,7 +132,7 @@ onUnmounted(() => {
                             <div class="control">
                                 <button 
                                     type="submit"
-                                    class="button is-primary is-small"
+                                    class="button is-small is-primary is-small"
                                     @click="save($event)"
                                 >
                                     <span>Save</span>
@@ -141,7 +141,7 @@ onUnmounted(() => {
                             <div class="control">
                                 <button 
                                     type="button"
-                                    class="button is-danger  is-small"
+                                    class="button is-small is-danger  is-small"
                                     @click="reset()"
                                 >
                                     <span>Cancel</span>

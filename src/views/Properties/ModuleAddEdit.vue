@@ -412,7 +412,7 @@ function reset() {
                 <div class="control">
                   <button 
                     type="submit" 
-                    class="button is-primary"
+                    class="button is-small is-primary"
                     @click="submit($event, true)"
                   >
                     <span>Save and close</span>
@@ -421,7 +421,7 @@ function reset() {
                 <div class="control">
                   <button 
                     type="submit" 
-                    class="button is-primary"
+                    class="button is-small is-primary"
                     @click="submit($event)"
                   >
                     <span>Save</span>
@@ -430,7 +430,7 @@ function reset() {
                 <div class="control">
                   <button 
                     type="button" 
-                    class="button is-primary is-outlined"
+                    class="button is-small is-primary is-outlined"
                     @click="reset()"
                   >
                     <span>Reset</span>
@@ -439,7 +439,7 @@ function reset() {
                 <div class="control">
                   <button 
                     type="button" 
-                    class="button is-danger is-outlined"
+                    class="button is-small is-danger is-outlined"
                     @click="goToMainView()"
                   >
                     <span>Cancel</span>

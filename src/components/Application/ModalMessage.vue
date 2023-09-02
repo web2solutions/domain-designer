@@ -20,8 +20,8 @@ const { alert, show } = storeToRefs(alertStore); */
             <p>This is sample modal</p>
           </section>
           <footer class="modal-card-foot">
-            <button class="button jb-modal-close">Cancel</button>
-            <button class="button is-danger jb-modal-close">Delete</button>
+            <button class="button is-small jb-modal-close">Cancel</button>
+            <button class="button is-small is-danger jb-modal-close">Delete</button>
           </footer>
         </div>
         <button class="modal-close is-large jb-modal-close" aria-label="close"></button>

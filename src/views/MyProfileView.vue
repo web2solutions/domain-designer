@@ -29,7 +29,7 @@ defineProps<{
                       <div class="field">
                         <div class="field file">
                           <label class="upload control">
-                            <a class="button is-primary">
+                            <a class="button is-small is-primary">
                               <span class="icon"><i class="mdi mdi-upload default"></i></span>
                               <span>Pick a file</span>
                             </a>
@@ -72,7 +72,7 @@ defineProps<{
                     <div class="field-body">
                       <div class="field">
                         <div class="control">
-                          <button type="submit" class="button is-primary">
+                          <button type="submit" class="button is-small is-primary">
                             Submit
                           </button>
                         </div>
@@ -167,7 +167,7 @@ defineProps<{
                 <div class="field-body">
                   <div class="field">
                     <div class="control">
-                      <button type="submit" class="button is-primary">
+                      <button type="submit" class="button is-small is-primary">
                         Submit
                       </button>
                     </div>

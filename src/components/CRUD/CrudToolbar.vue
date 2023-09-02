@@ -15,13 +15,13 @@ defineProps<{
           {{ appName }}
         </p>
         <p class="card-header-icon">
-          <router-link to="create" type="button" class="button">
+          <router-link to="create" type="button" class="button is-small">
             <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
           </router-link>
-          <button type="button" class="button">
+          <button type="button" class="button is-small">
             <span class="icon"><i class="mdi mdi-close-circle"></i></span>
           </button>
-          <button type="button" class="button" @click="store.sync()">
+          <button type="button" class="button is-small" @click="store.sync()">
             <span class="icon"><i class="mdi mdi-reload"></i></span>
           </button>
         </p>

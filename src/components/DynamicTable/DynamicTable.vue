@@ -32,7 +32,7 @@ function selectMainId(id: string) {
           <p class="card-header-icon">
             <button
               type="button"
-              class="button"
+              class="button is-small"
               @click="action.handler()"
               v-for="action in toolbarActions" :key="action.name"
             >

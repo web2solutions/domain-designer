@@ -88,7 +88,7 @@ async function selectMainId(id: string) {
                                         <div class="buttons is-right">
                                             <button class="button is-small is-light" type="button"
                                                 @click="router.push(`/entities/coder/${record.id}`)">
-                                                <span class="icon"><i class="mdi mdi-eye"></i></span>
+                                                <span class="icon"><i class="mdi mdi-xml"></i></span>
                                             </button>
                                             <button class="button is-small is-light" type="button"
                                                 @click="preview(record.id, $event)">
