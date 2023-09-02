@@ -12,11 +12,16 @@ const enUS: Record<string, any> = {
         Dashboard: 'Dashboard',
         Applications: 'Applications',
         AddInitialData: 'Add Demo Data',
+        DatabaseBackup: 'Database backup',
     },
     dashboard: {
         Customers: 'Customers',
         Sales: 'Sales',
         Performance: 'Performance',
+        Domains: 'Domains',
+        DataEntities: 'Data Entities',
+        DataEntitiesVisualRepresentation: 'Data Entities Visual Representation',
+        ValueObjects: 'Value Objects',
     }
 };
 
@@ -32,11 +37,16 @@ const ptBR: Record<string, any> = {
         Dashboard: 'Dashboard',
         Applications: 'Aplicações',
         AddInitialData: 'Adicionar Demo Data',
+        DatabaseBackup: 'Backup do Banco de Dados',
     },
     dashboard: {
         Customers: 'Clientes',
         Sales: 'Vendas',
         Performance: 'Performance',
+        Domains: 'Domínios',
+        DataEntities: 'Entidade de Dados',
+        DataEntitiesVisualRepresentation: 'Representação Visual das Entidade de Dados',
+        ValueObjects: 'Objetos Valor',
     }
 }
 
