@@ -12,7 +12,9 @@ export class DomainModel extends BaseModel implements DomainSchema {
     public description: string;
     constructor(record: IDomainCreateDTO){
         super();
-        this.id = record.id || super.id;
+        if(record.id) {
+            this.id = record.id;
+        }
         this.name = record.name;
         this.description = record.description || '';
         this.db = idx.db;

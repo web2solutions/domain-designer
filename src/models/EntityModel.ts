@@ -14,7 +14,9 @@ export class EntityModel extends BaseModel implements EntitySchema {
     public isSchemaOnly: boolean;
     constructor(record: IEntityCreateDTO){
         super();
-        this.id = record.id || super.id;
+        if(record.id) {
+            this.id = record.id;
+        }
         this.name = record.name;
         this.domain_id = record.domain_id || ''
         this.description = record.description || '';

@@ -16,7 +16,10 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     public spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject;
     constructor(record: IPropertyCreateDTO){
         super();
-        this.id = record.id || super.id;
+        console.log(this.id)
+        if(record.id) {
+            this.id = record.id;
+        }
         this.name = record.name;
         this.domain_id = record.domain_id;
         this.entity_id = record.entity_id;

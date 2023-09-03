@@ -92,7 +92,7 @@ function getHash(type: string): IPropertyCreateDTO {
     }
     // console.log(hash);
     const clearHash: Record<string, any> = {};
-    Object.keys(hash.spec).map(key => {
+    Object.keys(hash.spec).forEach(key => {
       if(hash.spec[key] !== '' && hash.spec[key] != false) {
         clearHash[key] = hash.spec[key];
       }
@@ -120,7 +120,7 @@ const getHashSpec: Record<string, any> = {
       pattern: input_pattern.value,
       minLength: input_minLength.value,
       maxLength: input_maxLength.value,
-      enum: input_enum.value,
+      enum: input_enum.value.split(',').map(el => el.trim()),
     }
   },
   'number': () => {
@@ -196,7 +196,7 @@ onMounted(() => {
       if (property.spec.pattern) input_pattern.value = property.spec.pattern;
       if (property.spec.minLength) input_minLength.value = property.spec.minLength as unknown as string;
       if (property.spec.maxLength) input_maxLength.value = property.spec.maxLength as unknown as string;
-      if (property.spec.enum) input_enum.value = property.spec.enum as unknown as string;
+      if (property.spec.enum) input_enum.value = property.spec.enum.join(', ') as unknown as string;
 
       if (property.spec.example) input_example.value = property.spec.example;
       if (property.spec.default) input_default.value = property.spec.default;
@@ -440,6 +440,7 @@ onUnmounted(() => {
               </div>
               <div class="field-body">
                 <div class="field">
+                  
                   <div class="control">
                     <input 
                       type="text" 
@@ -449,6 +450,9 @@ onUnmounted(() => {
                       v-model.trim="input_enum" 
                       placeholder="Type a comma separated list of enums"
                     />
+                    <template v-for="val in input_enum.toString().split(',')" :key="val.trim()">
+                      <span v-if="val.trim() !== ''" class="tag is-link">{{ val.trim() }}</span>
+                    </template>
                   </div>
                 </div>
               </div>
