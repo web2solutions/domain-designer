@@ -6,6 +6,7 @@ import type { IEntityCreateDTO } from "@/models/IEntityCreateDTO";
 import { idx, DomainDesignerDB } from '@/database/IDX'
 import { EntitySchema } from "@/database/EntitySchema";
 
+
 export class EntityModel extends BaseModel implements EntitySchema {
     private db: DomainDesignerDB;
     public name: string;
@@ -40,12 +41,13 @@ export class EntityModel extends BaseModel implements EntitySchema {
     }
 
     toJSON(): EntitySchema {
-        const { name, description, domain_id } = this;
+        const { name, description, domain_id, version } = this;
         const json = {
             id: this.id,
             name,
             domain_id,
             description,
+            version,
             isSchemaOnly: this.isSchemaOnly,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
@@ -95,8 +97,15 @@ export class EntityModel extends BaseModel implements EntitySchema {
     }
 
     static async update(id: string, data: IEntityCreateDTO): Promise<EntitySchema> {
-        await idx.db.entities.update(id, data);
-        const document = await idx.db.entities.get(id);
+        let document = await idx.db.entities.get(id);
+        await idx.db.entities.update(id, { 
+            ...document, 
+            ...data, 
+            version: document.version + 1,
+            id: document.id, // avoid change id
+        });
+        document = await idx.db.entities.get(id);
+        await EntityModel.storeEvent('entities', 'update', document);
         return document;
     }
 }

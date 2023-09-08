@@ -20,10 +20,16 @@ export class DomainModel extends BaseModel implements DomainSchema {
         this.db = idx.db;
     }
 
-    async save() {
-        const rawDoc = this.toJSON()
-        const id = await this.db.domains.add(rawDoc)
-        return { ...rawDoc, id };
+    async save(): Promise<DomainSchema> {
+        try {
+            const rawDoc = this.toJSON()
+            const id = await this.db.domains.add(rawDoc)
+            const document = { ...rawDoc, id };
+            await DomainModel.storeEvent('domains', 'add', document);
+            return document;
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
     async count () {
@@ -36,11 +42,12 @@ export class DomainModel extends BaseModel implements DomainSchema {
     }
 
     toJSON(): DomainSchema {
-        const { name, description } = this;
+        const { name, description, version } = this;
         const json = {
             id: this.id,
             name,
             description,
+            version,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
         };
@@ -86,8 +93,15 @@ export class DomainModel extends BaseModel implements DomainSchema {
     }
 
     static async update(id: string, data: IDomainCreateDTO): Promise<DomainSchema> {
-        await idx.db.domains.update(id, data);
-        const document = await idx.db.domains.get(id);
+        let document = await idx.db.domains.get(id);
+        await idx.db.domains.update(id, { 
+            ...document, 
+            ...data, 
+            version: document.version + 1,
+            id: document.id, // avoid change id
+        });
+        document = await idx.db.domains.get(id);
+        await DomainModel.storeEvent('domains', 'update', document);
         return document;
     }
 }

@@ -7,6 +7,7 @@ import type { IPropertyCreateDTO } from "@/models/IPropertyCreateDTO";
 import { idx, DomainDesignerDB } from '@/database/IDX'
 import { PropertySchema } from "@/database/PropertySchema";
 
+
 export class PropertyModel extends BaseModel implements PropertySchema {
     private db: DomainDesignerDB;
     public name: string;
@@ -44,7 +45,7 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     }
 
     toJSON(): PropertySchema {
-        const { name, description, domain_id, entity_id, spec } = this;
+        const { name, description, domain_id, entity_id, spec, version } = this;
         const json = {
             id: this.id,
             name,
@@ -54,6 +55,7 @@ export class PropertyModel extends BaseModel implements PropertySchema {
             spec,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
+            version,
         };
         return json
     }
@@ -100,8 +102,15 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     }
 
     static async update(id: string, data: IPropertyCreateDTO): Promise<PropertySchema> {
-        await idx.db.properties.update(id, data);
-        const document = await idx.db.properties.get(id);
+        let document = await idx.db.properties.get(id);
+        await idx.db.properties.update(id, { 
+            ...document, 
+            ...data, 
+            version: document.version + 1,
+            id: document.id, // avoid change id
+        });
+        document = await idx.db.properties.get(id);
+        await PropertyModel.storeEvent('properties', 'update', document);
         return document;
     }
 }

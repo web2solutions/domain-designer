@@ -8,6 +8,7 @@ export class PropertySchema {
     name: string;
     spec: OpenAPIV3.NonArraySchemaObject | OpenAPIV3.ArraySchemaObject;
     description: string;
+    version: number;
     createdAt: Date;
     updatedAt: Date;
 }
