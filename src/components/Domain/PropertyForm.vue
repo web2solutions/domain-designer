@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { OpenAPIV3 } from "openapi-types";
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useDomainOverviewStore } from '@/stores';
-import { OASDataTypes, OASFormats } from '@/components/OAS';
+import { OASDataTypes, OASFormats,  OASArrayDataTypes } from '@/components/OAS';
 import type { IPropertyCreateDTO } from '@/models/IPropertyCreateDTO';
 
 let domainOverViewStore = useDomainOverviewStore();
@@ -11,6 +12,13 @@ let input_description = ref('');
 let input_type = ref('');
 let input_type_invalid = ref(false);
 
+let input_arrayType = ref('')
+let input_arrayType_invalid = ref(false);
+let input_oneOf = ref([]);
+let input_oneOf_invalid = ref(false);
+
+let input_nestedArrayType = ref('');
+let input_nestedArrayType_invalid = ref(false)
 
 let input_format = ref('');
 let input_pattern = ref('');
@@ -30,6 +38,10 @@ let input_maximum = ref('');
 let input_exclusiveMinimum = ref(false);
 let input_exclusiveMaximum = ref(false);
 let input_multipleOf = ref('');
+
+let input_uniqueItems = ref(false);
+let input_minItems = ref('');
+let input_maxItems = ref('');
 
 
 async function save (event: Event) {
@@ -52,6 +64,10 @@ function reset() {
     input_type.value = '';
     input_type_invalid.value = false;
 
+    input_arrayType.value = '';
+    input_arrayType_invalid.value = false;
+    input_oneOf.value = [];
+    input_oneOf_invalid.value = false;
 
     input_format.value = '';
     input_pattern.value = '';
@@ -71,6 +87,10 @@ function reset() {
     input_exclusiveMinimum.value = false;
     input_exclusiveMaximum.value = false;
     input_multipleOf.value = ''
+
+    input_uniqueItems.value = false;
+    input_minItems.value = '';
+    input_maxItems.value = '';
 
 
     domainOverViewStore.setPropertyFormMode('create');
@@ -100,7 +120,7 @@ function getHash(type: string): IPropertyCreateDTO {
     hash.spec = { ...clearHash }
     return hash as IPropertyCreateDTO;
   }
-  throw 'invalid data'
+  throw new Error('invalid data')
 }
 
 const getHashSpec: Record<string, any> = {
@@ -142,6 +162,30 @@ const getHashSpec: Record<string, any> = {
       exclusiveMaximum: input_exclusiveMaximum.value,
       multipleOf: input_multipleOf.value,
     }
+  },
+  'array': () => {
+    let items: any = {};
+    
+    if(input_arrayType.value === 'mixed') {
+      console.log(items.oneOf)
+      items.oneOf = input_oneOf.value.map(type => {
+        return { type }
+      });
+    } else if(input_arrayType.value === 'arbitrary') {
+      items.type = {};
+    } else if(input_arrayType.value === 'array') {
+      items.type = input_arrayType.value;
+      items.items = { type: input_nestedArrayType.value }
+    } else {
+      items.type = input_arrayType.value;
+    }
+
+    return {
+      uniqueItems: input_uniqueItems.value,
+      minItems: input_minItems.value,
+      maxItems: input_maxItems.value,
+      items
+    }
   }
 }
 
@@ -151,6 +195,18 @@ function selectDataType () {
   // console.log(input_type.value)
   domainOverViewStore.selectedDataType = input_type.value;
   domainOverViewStore.selectedFormats = OASFormats[input_type.value];
+  validate();
+}
+
+function selectArrayDataType () {
+  console.log('selectArrayDataType input_arrayType.value', input_arrayType.value)
+  if (input_arrayType.value === 'mixed') {
+    // 
+  }
+  // console.log(input_type.value)
+  // domainOverViewStore.selectedDataType = input_type.value;
+  // domainOverViewStore.selectedFormats = OASFormats[input_type.value];
+  // if(input_arrayType.value !== '') input_arrayType_invalid.value = false;
   validate();
 }
 
@@ -167,6 +223,26 @@ function validate () {
     return false;
   } else {
     input_type_invalid.value = false;
+  }
+
+  if (input_type.value === 'array') {
+    console.log('validating array field', input_arrayType.value)
+    if (input_arrayType.value === '') {
+      input_arrayType_invalid.value = true;
+      return false;
+    } else {
+      input_arrayType_invalid.value = false;
+
+      if (input_arrayType.value === 'mixed') {
+        console.log(input_oneOf.value, input_oneOf.value.length)
+        if(input_oneOf.value.length === 0) {
+          input_oneOf_invalid.value = true;
+          return false;
+        }
+
+        input_oneOf_invalid.value = false;
+      }
+    }
   }
 
   return true;
@@ -210,6 +286,18 @@ onMounted(() => {
       if (property.spec.exclusiveMinimum) input_exclusiveMinimum.value = property.spec.exclusiveMinimum;
       if (property.spec.exclusiveMaximum) input_exclusiveMaximum.value = property.spec.exclusiveMaximum;
       if (property.spec.multipleOf) input_multipleOf.value = property.spec.multipleOf as unknown as string;
+
+      if (property.spec.uniqueItems) input_uniqueItems.value = property.spec.uniqueItems;
+      if (property.spec.minItems) input_minItems.value = property.spec.minItems as unknown as string;
+      if (property.spec.maxItems) input_maxItems.value = property.spec.maxItems as unknown as string;
+
+      const specAsArray: OpenAPIV3.ArraySchemaObject = property.spec as OpenAPIV3.ArraySchemaObject;
+      console.log('specAsArray', specAsArray.items)
+      console.log('specAsArray', specAsArray.type)
+      if(specAsArray.items) {
+        if (specAsArray.items) input_arrayType.value = (specAsArray.items as OpenAPIV3.SchemaObject).type as string;
+      }
+      selectArrayDataType();
     }
 });
 
@@ -300,11 +388,95 @@ onUnmounted(() => {
             </div>
             <!-- end input -->
           </div>
-          <div class="column">
+          <div class="column"  v-if="domainOverViewStore.selectedDataType === 'array'">
             <!-- start input -->
-            <div class="field is-horizontal" v-if="domainOverViewStore.selectedDataType === 'string' || domainOverViewStore.selectedDataType === 'number' || domainOverViewStore.selectedDataType === 'integer'">
+            <div class="field is-horizontal">
               <div class="field-label is-small">
-                <label class="label" for="">Format</label>
+                <label class="label" for="input_arrayType">Type of elements</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select
+                        class="select input is-small"
+                        id="input_arrayType" 
+                        v-model="input_arrayType"
+                        @change="selectArrayDataType()"
+                      >
+                        <option value="">please select one data type</option>
+                        <option v-for="type in  OASArrayDataTypes" :key="type" :value="type">{{ type }}</option>
+                      </select>
+                    </div>
+                     <p v-if="input_arrayType_invalid" class="help is-danger">
+                      This field is required
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+          <div class="column"  v-if="domainOverViewStore.selectedDataType === 'array' && input_arrayType === 'mixed'">
+            <!-- start input -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_oneOf">Type of elements</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-multiple">
+                      <select
+                        class="select input is-small"
+                        id="input_oneOf"
+                        multiple
+                        v-model="input_oneOf"
+                      >
+                        <option v-for="type in  OASArrayDataTypes" :key="type" :value="type">{{ type }}</option>
+                      </select>
+                    </div>
+                     <p v-if="input_oneOf_invalid" class="help is-danger">
+                      This field is required
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+          <div class="column"  v-if="domainOverViewStore.selectedDataType === 'array' && input_arrayType === 'array'">
+            <!-- start input -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_nestedArrayType">Type of elements</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select
+                        class="select input is-small"
+                        id="input_nestedArrayType"
+                        v-model="input_nestedArrayType"
+                      >
+                        <option v-for="type in  OASDataTypes" :key="type" :value="type">{{ type }}</option>
+                      </select>
+                    </div>
+                     <p v-if="input_nestedArrayType_invalid" class="help is-danger">
+                      This field is required
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
+          </div>
+          <div class="column"  v-if="domainOverViewStore.selectedDataType === 'string' || domainOverViewStore.selectedDataType === 'number' || domainOverViewStore.selectedDataType === 'integer'">
+            <!-- start input -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_format">Format</label>
               </div>
               <div class="field-body">
                 <div class="field">
@@ -325,17 +497,11 @@ onUnmounted(() => {
               </div>
             </div>
             <!-- end input -->
+            
           </div>
-          <div class="column" v-if="domainOverViewStore.selectedDataType !== ''">
-            <label class="checkbox field-label is-small" >
-              <input 
-                type="checkbox"
-                name="input_nullable" 
-                v-model="input_nullable"
-              >
-              It is Nullable
-            </label>
-          </div>
+          <!-- <div class="column" v-if="domainOverViewStore.selectedDataType === 'array'">
+            xxxxxxxxx
+          </div> -->
           <div class="column" v-if="domainOverViewStore.selectedDataType === 'string'">
             <!-- start input is-small -->
             <div class="field is-horizontal">
@@ -361,7 +527,7 @@ onUnmounted(() => {
           </div>
         </div>
         <div class="columns" v-if="domainOverViewStore.selectedDataType !== ''">
-          <div class="column">
+          <div class="column" v-if="domainOverViewStore.selectedDataType !== 'array'">
             <!-- start input is-small -->
             <div class="field is-horizontal">
               <div class="field-label is-small">
@@ -406,6 +572,16 @@ onUnmounted(() => {
               </div>
             </div>
             <!-- end input -->
+          </div>
+          <div class="column" v-if="domainOverViewStore.selectedDataType !== ''">
+            <label class="checkbox field-label is-small" >
+              <input 
+                type="checkbox"
+                name="input_nullable" 
+                v-model="input_nullable"
+              >
+              It is Nullable
+            </label>
           </div>
           <div class="column">
             
@@ -518,7 +694,7 @@ onUnmounted(() => {
             <!-- start input is-small -->
             <div class="field is-horizontal">
               <div class="field-label is-small">
-                <label class="label" for="input_default">Min. number</label>
+                <label class="label" for="input_minimum">Min. number</label>
               </div>
               <div class="field-body">
                 <div class="field">
@@ -617,13 +793,62 @@ onUnmounted(() => {
 
         <div class="columns" v-if="domainOverViewStore.selectedDataType === 'array'">
           <div class="column">
-            minItems
+            
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_minItems">Min. items</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      type="number" 
+                      class="input is-small"
+                      name="input_minItems"
+                      id="input_minItems" 
+                      v-model.number="input_minItems" 
+                      placeholder="Type the minimum number of ittems it should have"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
           </div>
           <div class="column">
-            maxItems
+            
+            <!-- start input is-small -->
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label class="label" for="input_maxItems">Max. items</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input 
+                      type="number" 
+                      class="input is-small"
+                      name="input_maxItems"
+                      id="input_maxItems" 
+                      v-model.number="input_maxItems" 
+                      placeholder="Type the maximum number of ittems it should have"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end input -->
           </div>
           <div class="column">
-            uniqueItems
+            <label class="checkbox field-label is-small" >
+              <input 
+                type="checkbox"
+                name="input_uniqueItems" 
+                v-model="input_uniqueItems"
+              >
+              Unique Items
+            </label>
           </div>
         </div>
         <hr>

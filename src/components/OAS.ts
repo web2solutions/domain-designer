@@ -51,7 +51,14 @@ export const OASDataTypes: string[] = [
     'boolean',
     'array',
     'object',
-  ];
+];
+
+
+export const OASArrayDataTypes: string[] = [
+  ...OASDataTypes,
+  'mixed',
+  'arbitrary'
+];
   
 export const OASFormats: Record<string, string[]> = {
     number: [
