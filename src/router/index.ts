@@ -21,6 +21,38 @@ export const routes = [
     props: { moduleName: 'List Domains' },
   }, */
   {
+    path: '/infrastructure',
+    props: { moduleName: 'Infrastructure', icon: 'mdi-alpha-e-box' },
+    name: 'Infrastructure',
+    component: () => import('@/views/Infrastructure/ModuleDrawer.vue'),
+    children: [
+      { 
+        path: 'schemas/list',
+        name: 'Schema Components',
+        component: () => import('@/views/Infrastructure/Schemas/ModuleList.vue'),
+        props: { childName: 'Schema Components', icon: 'mdi-table' },
+      },
+      { 
+        path: 'schemas/create',
+        name: 'New Schema',
+        component: () => import('@/views/Infrastructure/Schemas/ModuleAddEdit.vue'),
+        props: { childName: 'New Schema', icon: 'mdi-ballot' },
+      }, 
+      { 
+        path: 'schemas/update/:id',
+        name: 'Update Schema',
+        component: () => import('@/views/Infrastructure/Schemas/ModuleAddEdit.vue'),
+        props: { childName: 'Update Schema', icon: 'mdi-pencil' },
+      },
+      { 
+        path: 'schemas/overview/:id',
+        name: 'Schema Overview',
+        component: () => import('@/views/Infrastructure/Schemas/SchemaOverview.vue'),
+        props: { childName: 'Schema Overview', icon: 'mdi-ballot' },
+      }
+    ]
+  },
+  {
     path: '/apis',
     props: { moduleName: 'API Designer', icon: 'mdi-pencil-ruler' },
     name: 'API Designer',
@@ -139,7 +171,7 @@ export const routes = [
           path: 'overview/:id',
           name: 'Property Overview',
           component: () => import('@/views/Properties/PropertyOverview.vue'),
-          props: { childName: 'Entity Overview', icon: 'mdi-ballot' },
+          props: { childName: 'Property Overview', icon: 'mdi-ballot' },
         }
     ]
   },

@@ -3,8 +3,8 @@ import { onMounted, ref, onUnmounted, watch } from 'vue';
 import { storeToRefs } from 'pinia'
 import type { RouteRecordName } from 'vue-router';
 import { useRoute } from 'vue-router';
-import YAML from 'yaml'
-import router from '@/router';
+import YAML from 'yaml';
+// import router from '@/router';
 import { default as EntityPanel } from '@/components/Domain/EntityPanel.vue';
 import { default as DomainOverviewHeader } from './DomainOverviewHeader.vue'
 import {  default as  PropertyPanel } from "../../components/Domain/PropertyPanel.vue";
@@ -104,11 +104,13 @@ const actionsEntity = ref([
 
 
 function destroyGraph(): void {
+  if(!document.getElementById('paper')) return;
   (document.getElementById('paper') as HTMLElement).innerHTML = '';
 }
 
 async function buildGraph() {
   // visualDomainPanelLoading.value = true;
+  if(!document.getElementById('paper')) return;
   const  graph = new joint.dia.Graph();
     const wrapperHeight = 200;
     

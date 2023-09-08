@@ -22,6 +22,8 @@ const enUS: Record<string, any> = {
         DataEntities: 'Data Entities',
         DataEntitiesVisualRepresentation: 'Data Entities Visual Representation',
         ValueObjects: 'Value Objects',
+        SchemasComponents: 'Schema Components',
+        ApplicationComponents: 'Application Components',
     }
 };
 
@@ -47,6 +49,8 @@ const ptBR: Record<string, any> = {
         DataEntities: 'Entidade de Dados',
         DataEntitiesVisualRepresentation: 'Representação Visual das Entidade de Dados',
         ValueObjects: 'Objetos Valor',
+        SchemasComponents: 'Esquema Componentes',
+        ApplicationComponents: 'Componentes do Software',
     }
 }
 

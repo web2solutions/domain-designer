@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { OpenAPIV3 } from "openapi-types";
+import { onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import type { RouteRecordName } from 'vue-router';
 import { BreadCrumbMain } from '@/components/Application/index';
 // import { formatCurrency } from '@/components/CRUD/utils';
 
-import { useDomainsStore, useLanguageStore, useEntitiesStore, usePropertiesStore } from '@/stores';
-import { DomainModel } from '@/models/DomainModel';
+import { useDomainsStore, useLanguageStore, useEntitiesStore, usePropertiesStore, useSchemasStore } from '@/stores';
+import { SchemaModel } from '@/models/SchemaModel';
 import { EntityModel } from '@/models/EntityModel';
 import { PropertyModel } from '@/models/PropertyModel';
 
 const languageStore: any = useLanguageStore();
 const domainStore = useDomainsStore();
 const entityStore = useEntitiesStore();
+const schemaStore = useSchemasStore();
 const propertyStore = usePropertiesStore();
 
 const visualDomainPanelLoading = ref(true)
@@ -19,6 +22,28 @@ const visualDomainPanelLoading = ref(true)
 function destroyGraph(): void {
   (document.getElementById('paper') as HTMLElement).innerHTML = '';
 }
+
+let domainStoreRef = storeToRefs(domainStore);
+let entityStoreRef = storeToRefs(entityStore);
+let propertyStoreRef = storeToRefs(propertyStore);
+
+/* watch(domainStoreRef.records, async () => {
+  console.log('lololololololol')
+  destroyGraph();
+  await buildGraph();
+});
+
+watch(entityStoreRef.records, async () => {
+  console.log('lololololololol')
+  destroyGraph();
+  await buildGraph();
+});
+
+watch(propertyStoreRef.records, async () => {
+  console.log('lololololololol')
+  destroyGraph();
+  await buildGraph();
+}); */
 
 async function buildGraph() {
   // visualDomainPanelLoading.value = true;
@@ -54,45 +79,7 @@ async function buildGraph() {
 
     const  classes: any = { };
 
-    let portsIn = {
-      id: '',
-      attrs: {
-        portBody: {
-          magnet: true,
-          r: 5,
-          fill: '#023047',
-          stroke: '#023047',
-          x: -5,
-          y: -5,
-        },
-        label: { 
-            text: 'port in' 
-        }
-      },
-      markup: [{
-        tagName: 'circle',
-        selector: 'portBody'
-      }]
-    };
 
-    let portsOut = {
-      id: '',
-      attrs: {
-        portBody: {
-          magnet: true,
-          r: 5,
-          fill: '#E6A502',
-          stroke: '#023047'
-        },
-        label: { 
-            text: 'port out' 
-        }
-      },
-      markup: [{
-        tagName: 'circle',
-        selector: 'portBody'
-      }]
-    };
 
     let x = 10;
     let y = 0;
@@ -117,8 +104,6 @@ async function buildGraph() {
       })
       // console.log(properties)
       const height = properties.map(() => 20).reduce((acc, num) => { return acc + num }, 40);
-      portsIn.id = `portIn_${entity.name}`
-      portsOut.id = `portOut_${entity.name}`
       classes[entity.name] = new uml.Class({
             position: { x, y },
             size: { width: 260, height },
@@ -127,13 +112,10 @@ async function buildGraph() {
               // console.log(property)
               return `+ ${property.name}: ${property.spec?.format ?  property.spec?.format + '(' + property.spec?.type + ')' : property.spec?.type}`;
             }),
-            ports: {
-                items: [ portsIn, portsOut ] // add a port in constructor,
-            },
             methods: [],
             attrs: {
                 '.uml-class-name-rect': {
-                    fill: '#485fc7',
+                    fill: '#3e8ed0',
                     stroke: '#666',
                     color: '#ffffff',
                     'stroke-width': 0.5,
@@ -164,10 +146,74 @@ async function buildGraph() {
           x = 10
         }
     }
+    const schemas = await SchemaModel.getEntireCollection();
+    
+    for(const schema of schemas) {
+      
+      const props = (schema.spec as OpenAPIV3.SchemaObject).properties || {};
+      console.log(schema.name, props)
+      const properties = Object.keys(props as Record<string, any>) || [];
+      const heightBox = properties.map(() => 20).reduce((acc, num) => {
+        return acc + num
+      }, 40);
+      classes['schema_' + schema.name] = new uml.Class({
+        position: {
+          x,
+          y
+        },
+        size: {
+          width: 260,
+          height: heightBox
+        },
+        name: schema.name,
+        attributes: properties.map((propertyName: string) => {
+          // console.log({...schemaStore.record.spec}, propertyName)
+          const property: OpenAPIV3.SchemaObject = props[propertyName] as OpenAPIV3.SchemaObject;
+          
+          return `+ ${propertyName}: ${property.format ?  property.format + '(' + property.type + ')' : property.type ? property.type : property.$ref.split('/')[3]} ${property.enum ? ' \n -> enum [' + (property.enum.join(', ')) +']' : ''}`;
+        }),
+        methods: [],
+        attrs: {
+          '.uml-class-name-rect': {
+            fill: '#48c78e',
+            stroke: '#666',
+            color: '#ffffff',
+            'stroke-width': 0.5,
+          },
+          '.uml-class-attrs-rect': {
+            fill: '#f5f5f5',
+            stroke: '#666',
+            'stroke-width': 0.5,
+          },
+          '.uml-class-methods-rect': {
+            fill: '#f5f5f5',
+            stroke: '#666',
+            'stroke-width': 0.5,
+          },
+          '.uml-class-methods-text, .uml-class-attrs-text': {
+            fill: '#fff',
+            color: '#ffffff',
+          }
+        }
+      })
+
+      placedItems += 1;
+
+        
+      x += 330
+
+      if( (placedItems % 4) === 0) {
+        y += 250;
+        x = 10
+      }
+    }
 
     Object.keys(classes).forEach(function(key) {
         graph.addCell(classes[key]);
     });
+
+    paper.fitToContent();
+
     Object.keys(classes).forEach(function(key) {
       classes[key].on('change:position', function(a: any) {
         console.log('a', a)
@@ -234,6 +280,7 @@ onMounted(async() => {
   await domainStore.sync();
   await entityStore.sync()
   await propertyStore.sync();
+  await schemaStore.sync();
 
   await buildGraph();
 });
@@ -316,13 +363,35 @@ onMounted(async() => {
                 </div>
               </div>
             </div>
+            <div class="tile is-parent">
+              <div class="card tile is-child">
+                <div class="card-content">
+                  <div class="level is-mobile">
+                    <div class="level-item">
+                      <div class="is-widget-label"><h3 class="subtitle is-spaced">
+                        {{ languageStore.default.dashboard.SchemasComponents }}
+                      </h3>
+                        <h1 class="title">
+                          {{ schemaStore.total }}
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="level-item has-widget-icon">
+                      <div class="is-widget-icon"><span class="icon has-text-primary is-large"><i
+                          class="mdi mdi-group mdi-48px"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="card">
             <header class="card-header">
               <p class="card-header-title">
                 <span class="icon"><i class="mdi mdi-set-none"></i></span>
-                {{ languageStore.default.dashboard.DataEntitiesVisualRepresentation }}
+                {{ languageStore.default.dashboard.ApplicationComponents }}
               </p>
               <a href="#" class="card-header-icon">
                 <span class="icon"><i class="mdi mdi-reload"></i></span>
