@@ -16,7 +16,7 @@ const stores = {
     entities: 'id,domain_id,&name,description,version,createdAt,updatedAt',
     properties: 'id,domain_id,entity_id,name,description,version,createdAt,updatedAt',
     schemas: 'id,name,version,createdAt,updatedAt',
-    dataevents: 'id,collection,action,data_id,data,version,createdAt,updatedAt',
+    dataevents: 'id,entity,action,data_id,data,version,createdAt,updatedAt',
 }
 
 
@@ -45,7 +45,7 @@ export class DomainDesignerDB extends Dexie {
 export class IDX {
     public db: any;
     constructor(){
-        this.db = new DomainDesignerDB("DomainDesignerx1234");
+        this.db = new DomainDesignerDB("DomainDesignerx12345");
         // this.db.version(1).stores(stores)
     }
 

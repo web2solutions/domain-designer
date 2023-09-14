@@ -8,7 +8,7 @@ import { DataEventSchema } from "@/database/DataEventSchema";
 
 export class DataEventModel extends BaseModel implements DataEventSchema {
     private db: DomainDesignerDB;
-    public collection: string;
+    public entity: string;
     public action: string;
     public data_id: string;
     public data: any;
@@ -18,7 +18,7 @@ export class DataEventModel extends BaseModel implements DataEventSchema {
         if(record.id) {
             this.id = record.id;
         }
-        this.collection = record.collection;
+        this.entity = record.entity;
         this.action = record.action || '';
         this.data = record.data;
         this.data_id = record.data_id;
@@ -26,9 +26,14 @@ export class DataEventModel extends BaseModel implements DataEventSchema {
     }
 
     async save() {
-        const rawDoc = this.toJSON()
-        const id = await this.db.dataevents.add(rawDoc)
-        return { ...rawDoc, id };
+        try {
+            const rawDoc = this.toJSON()
+            const id = await this.db.dataevents.add(rawDoc)
+            const document = { ...rawDoc, id };
+            return document;
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
     async count () {
@@ -41,10 +46,10 @@ export class DataEventModel extends BaseModel implements DataEventSchema {
     }
 
     toJSON(): DataEventSchema {
-        const { collection, action, data, data_id } = this;
+        const { entity, action, data, data_id } = this;
         const json = {
             id: this.id,
-            collection,
+            entity,
             action,
             data_id,
             data,
@@ -60,8 +65,8 @@ export class DataEventModel extends BaseModel implements DataEventSchema {
         const total = await idx.db.dataevents.toCollection().count();
         const offset = (page * size) - size;
         const result = await idx.db.dataevents
-            .orderBy('collection')
-            //.reverse()
+            .orderBy('createdAt')
+            .reverse()
             .offset(offset)
             .limit(size)
             .toArray();
@@ -79,7 +84,7 @@ export class DataEventModel extends BaseModel implements DataEventSchema {
 
     static async getEntireCollection(): Promise<DataEventSchema[]> {
         const result = await idx.db.dataevents
-            .orderBy('collection')
+            .orderBy('entity')
             .toArray();
         return result;
     }

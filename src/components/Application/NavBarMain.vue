@@ -15,12 +15,14 @@ import {
   useDomainsStore, 
   useEntitiesStore,
   usePropertiesStore,
+  useDataEventsStore
 } from '@/stores';
 
 const alertStore = useAlertStore();
 const domainStore = useDomainsStore();
 const entityStore = useEntitiesStore();
 const propertyStore = usePropertiesStore();
+const dataEventStore = useDataEventsStore();
 const languageStore: any = useLanguageStore();
 const sessionStore: any = useSessionStore();
 
@@ -47,6 +49,12 @@ async function AddInitialData(e: any) {
   for(const property of propertiesData as any) {
     await propertyStore.create(property);
   }
+
+  await domainStore.sync();
+  await entityStore.sync()
+  await propertyStore.sync();
+  // await schemaStore.sync();
+  await dataEventStore.sync();
   alertStore.success(`Data is done`);
 }
 

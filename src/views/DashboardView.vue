@@ -4,18 +4,29 @@ import { onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { RouteRecordName } from 'vue-router';
 import { BreadCrumbMain } from '@/components/Application/index';
+
 // import { formatCurrency } from '@/components/CRUD/utils';
 
-import { useDomainsStore, useLanguageStore, useEntitiesStore, usePropertiesStore, useSchemasStore } from '@/stores';
+import { 
+  useDomainsStore, 
+  useLanguageStore, 
+  useEntitiesStore, 
+  usePropertiesStore, 
+  useSchemasStore, 
+  useDataEventsStore 
+} from '@/stores';
 import { SchemaModel } from '@/models/SchemaModel';
 import { EntityModel } from '@/models/EntityModel';
 import { PropertyModel } from '@/models/PropertyModel';
+
+import { toHumanDate } from "@/components/CRUD/utils";
 
 const languageStore: any = useLanguageStore();
 const domainStore = useDomainsStore();
 const entityStore = useEntitiesStore();
 const schemaStore = useSchemasStore();
 const propertyStore = usePropertiesStore();
+const dataEventStore = useDataEventsStore();
 
 const visualDomainPanelLoading = ref(true)
 
@@ -26,6 +37,7 @@ function destroyGraph(): void {
 let domainStoreRef = storeToRefs(domainStore);
 let entityStoreRef = storeToRefs(entityStore);
 let propertyStoreRef = storeToRefs(propertyStore);
+let dataEventStoreRef = storeToRefs(dataEventStore);
 
 /* watch(domainStoreRef.records, async () => {
   console.log('lololololololol')
@@ -37,13 +49,13 @@ watch(entityStoreRef.records, async () => {
   console.log('lololololololol')
   destroyGraph();
   await buildGraph();
-});
+});*/
 
 watch(propertyStoreRef.records, async () => {
   console.log('lololololololol')
   destroyGraph();
   await buildGraph();
-}); */
+}); 
 
 async function buildGraph() {
   // visualDomainPanelLoading.value = true;
@@ -281,6 +293,7 @@ onMounted(async() => {
   await entityStore.sync()
   await propertyStore.sync();
   await schemaStore.sync();
+  await dataEventStore.sync();
 
   await buildGraph();
 });
@@ -401,8 +414,55 @@ onMounted(async() => {
               <div class="card">
                 <div class="card-content gridbgd">
                   <div id="paper">
-                    xxxxx
+                    
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card has-table">
+            <header class="card-header">
+              <p class="card-header-title">
+                <span class="icon"><i class="mdi mdi-set-none"></i></span>
+                Last component changes
+              </p>
+              <a href="#" class="card-header-icon">
+                <span class="icon"><i class="mdi mdi-reload"></i></span>
+              </a>
+            </header>
+            <div class="card-content">
+              <div class="b-table has-pagination">
+                <div class="table-wrapper has-mobile-cards">
+                  <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                    <thead>
+                    <tr>
+                      <th></th>
+                      <th>Entity</th>
+                      <th>Change type</th>
+                      <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="dataEvent in dataEventStore.records" :key="dataEvent.id">
+                        <td class="is-image-cell">
+                          <div class="image">
+                            <img :src="`https://avatars.dicebear.com/v2/initials/${dataEvent.entity}.svg`" class="is-rounded">
+                          </div>
+                        </td>
+                        <td data-label="Entity">{{ dataEvent.entity }}</td>
+                        <td data-label="Action">
+                          {{ dataEvent.action }} - 
+                          {{ dataEvent.data.name }} 
+                          {{ dataEvent.data.description ? `(${dataEvent.data.description})` : '' }}
+                        </td>
+                        <td data-label="Date">{{ toHumanDate(dataEvent.createdAt) }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="notification">
+                  
                 </div>
               </div>
             </div>

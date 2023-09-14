@@ -9,3 +9,4 @@ export * from './session';
 export * from '../models/BaseModel';
 export * from '../database/IDX';
 export * from './domain.overview.store'
+export * from './dataevents.store'

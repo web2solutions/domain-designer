@@ -26,9 +26,15 @@ export class EntityModel extends BaseModel implements EntitySchema {
     }
 
     async save() {
-        const rawDoc = this.toJSON();
-        const id = await this.db.entities.add(rawDoc);
-        return { ...rawDoc, id };
+        try {
+            const rawDoc = this.toJSON()
+            const id = await this.db.entities.add(rawDoc)
+            const document = { ...rawDoc, id };
+            await EntityModel.storeEvent('Entity', 'Data Entity created', document);
+            return document;
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
     async count () {
@@ -105,7 +111,7 @@ export class EntityModel extends BaseModel implements EntitySchema {
             id: document.id, // avoid change id
         });
         document = await idx.db.entities.get(id);
-        await EntityModel.storeEvent('entities', 'update', document);
+        await EntityModel.storeEvent('Entity', 'Data Entity updated', document);
         return document;
     }
 }

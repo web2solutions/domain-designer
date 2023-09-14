@@ -30,9 +30,15 @@ export class PropertyModel extends BaseModel implements PropertySchema {
     }
 
     async save() {
-        const rawDoc = this.toJSON()
-        const id = await this.db.properties.add(rawDoc)
-        return { ...rawDoc, id };
+        try {
+            const rawDoc = this.toJSON()
+            const id = await this.db.properties.add(rawDoc)
+            const document = { ...rawDoc, id };
+            await PropertyModel.storeEvent('Property', 'Property created', document);
+            return document;
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
     async count () {
@@ -110,7 +116,7 @@ export class PropertyModel extends BaseModel implements PropertySchema {
             id: document.id, // avoid change id
         });
         document = await idx.db.properties.get(id);
-        await PropertyModel.storeEvent('properties', 'update', document);
+        await PropertyModel.storeEvent('Property', 'Property updated', document);
         return document;
     }
 }

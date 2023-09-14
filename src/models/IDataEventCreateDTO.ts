@@ -2,7 +2,7 @@
 
 export interface IDataEventCreateDTO {
     id?: string;
-    collection: string;
+    entity: string;
     action: string;
     data_id: string;
     data: any;

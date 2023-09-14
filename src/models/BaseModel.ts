@@ -19,9 +19,9 @@ export class BaseModel {
         this.version = 0;
     }
 
-    static async storeEvent (collection: string, action: string, data: any) {
+    static async storeEvent (entity: string, action: string, data: any) {
         const model = new DataEventModel({
-            collection,
+            entity,
             action,
             data,
             data_id: data.id,

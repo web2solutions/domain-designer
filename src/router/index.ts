@@ -176,6 +176,26 @@ export const routes = [
     ]
   },
   {
+    path: '/changes',
+    props: { moduleName: 'History', icon: 'mdi-alpha-e-box' },
+    name: 'History',
+    component: () => import('@/views/DataEvents/ModuleDrawer.vue'),
+    children: [
+        { 
+          path: 'list',
+          name: 'List History',
+          component: () => import('@/views/DataEvents/ModuleList.vue'),
+          props: { childName: 'List History', icon: 'mdi-table' },
+        },
+        { 
+          path: 'overview/:id',
+          name: 'Component Change Overview',
+          component: () => import('@/views/DataEvents/DataEventOverview.vue'),
+          props: { childName: 'Component Change Overview', icon: 'mdi-ballot' },
+        }
+    ]
+  },
+  {
     path: '/profile',
     name: 'My Profile',
     component: () => import('@/views/MyProfileView.vue'),

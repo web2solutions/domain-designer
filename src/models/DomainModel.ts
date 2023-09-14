@@ -25,7 +25,7 @@ export class DomainModel extends BaseModel implements DomainSchema {
             const rawDoc = this.toJSON()
             const id = await this.db.domains.add(rawDoc)
             const document = { ...rawDoc, id };
-            await DomainModel.storeEvent('domains', 'add', document);
+            await DomainModel.storeEvent('Domain', 'Domain created', document);
             return document;
         } catch (error: any) {
             throw new Error(error);
@@ -101,7 +101,7 @@ export class DomainModel extends BaseModel implements DomainSchema {
             id: document.id, // avoid change id
         });
         document = await idx.db.domains.get(id);
-        await DomainModel.storeEvent('domains', 'update', document);
+        await DomainModel.storeEvent('Domain', 'Domain updated', document);
         return document;
     }
 }

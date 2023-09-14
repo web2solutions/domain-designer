@@ -23,9 +23,15 @@ export class SchemaModel extends BaseModel implements SchemaSchema {
     }
 
     async save() {
-        const rawDoc = this.toJSON()
-        const id = await this.db.schemas.add(rawDoc)
-        return { ...rawDoc, id };
+        try {
+            const rawDoc = this.toJSON()
+            const id = await this.db.schemas.add(rawDoc)
+            const document = { ...rawDoc, id };
+            await SchemaModel.storeEvent('Schema', 'Schema created', document);
+            return document;
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
     async count () {
@@ -100,7 +106,7 @@ export class SchemaModel extends BaseModel implements SchemaSchema {
             id: document.id, // avoid change id
         });
         document = await idx.db.schemas.get(id);
-        await SchemaModel.storeEvent('schemas', 'update', document);
+        await SchemaModel.storeEvent('Schema', 'Schema updated', document);
         return document;
     }
 }
