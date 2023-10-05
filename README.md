@@ -31,6 +31,8 @@
 
 https://domain-designer.vercel.app/domains/list
 
+Video: https://www.linkedin.com/feed/update/urn:li:activity:7107550946720702464/
+
 
 ### Stack
 
