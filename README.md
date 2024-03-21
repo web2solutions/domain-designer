@@ -31,7 +31,7 @@
 
 https://domain-designer.vercel.app/domains/list
 
-Video: https://www.linkedin.com/posts/eduardo-perotta-de-almeida_rapidprototyping-agile-uml-activity-7107550946720702464-m_h-?utm_source=share&utm_medium=member_desktop
+Video: [https://www.linkedin.com/posts/eduardo-perotta-de-almeida_rapidprototyping-agile-uml-activity-7107550946720702464-m_h-?utm_source=share&utm_medium=member_desktop](https://www.linkedin.com/posts/activity-7107550946720702464-hCyC?utm_source=share&utm_medium=member_desktop)
 
 
 ### Stack
